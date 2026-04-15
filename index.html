@@ -1,0 +1,3212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Brokia">
+<meta name="theme-color" content="#4338CA">
+<title>Brokia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+--brand: #4338CA;
+--brand-light: #EEF2FF;
+--brand-mid: #818CF8;
+--brand-dark: #312E81;
+--green: #10B981;
+--green-light: #ECFDF5;
+--amber: #F59E0B;
+--amber-light: #FFFBEB;
+--red: #EF4444;
+--red-light: #FEF2F2;
+--gray-50: #F9FAFB;
+--gray-100: #F3F4F6;
+--gray-200: #E5E7EB;
+--gray-400: #9CA3AF;
+--gray-600: #4B5563;
+--gray-800: #1F2937;
+--gray-900: #111827;
+--radius: 16px;
+--radius-sm: 10px;
+--font: 'DM Sans', sans-serif;
+--font-serif: 'DM Serif Display', serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; }
+body {
+font-family: var(--font);
+background: #000;
+display: flex;
+justify-content: center;
+align-items: flex-start;
+height: 100%;
+overflow: hidden;
+}
+@media (max-width: 480px) {
+body { background: var(--gray-50); }
+}
+#app {
+width: 100%;
+max-width: 430px;
+height: 100vh;
+height: 100svh;
+background: var(--gray-50);
+position: relative;
+overflow: hidden;
+display: flex;
+flex-direction: column;
+}
+.screen {
+position: absolute;
+inset: 0;
+display: flex;
+flex-direction: column;
+transform: translateX(100%);
+transition: transform .35s cubic-bezier(.4,0,.2,1);
+background: var(--gray-50);
+overflow: hidden;
+}
+.screen.active { transform: translateX(0); }
+.screen.exit { transform: translateX(-30%); }
+.statusbar {
+height: 44px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0 20px;
+flex-shrink: 0;
+font-size: 12px;
+font-weight: 600;
+color: var(--gray-800);
+background: var(--gray-50);
+}
+.statusbar-icons { display: flex; gap: 6px; align-items: center; }
+.statusbar-icons span { font-size: 12px; }
+.scroll { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
+.scroll::-webkit-scrollbar { display: none; }
+.bottom-nav {
+height: 76px;
+background: #fff;
+border-top: none;
+box-shadow: 0 -1px 0 rgba(0,0,0,.06), 0 -8px 24px rgba(67,56,202,.07);
+display: flex;
+align-items: center;
+justify-content: space-around;
+flex-shrink: 0;
+padding: 0 4px;
+padding-bottom: max(env(safe-area-inset-bottom, 0px), 6px);
+}
+.nav-btn {
+display: flex; flex-direction: column; align-items: center; gap: 3px;
+background: none; border: none; cursor: pointer;
+padding: 6px 10px 4px;
+font-family: var(--font);
+flex: 1;
+transition: transform .15s;
+}
+.nav-btn:active { transform: scale(.90); }
+.nav-icon {
+width: 44px; height: 30px; border-radius: 20px;
+display: flex; align-items: center; justify-content: center;
+font-size: 18px;
+transition: all .25s cubic-bezier(.4,0,.2,1);
+}
+.nav-label {
+font-size: 10px; font-weight: 500; color: var(--gray-400);
+transition: all .25s cubic-bezier(.4,0,.2,1);
+letter-spacing: .01em;
+}
+.nav-dot {
+width: 4px; height: 4px; border-radius: 50%;
+background: var(--brand);
+opacity: 0; transform: scale(0);
+transition: all .25s cubic-bezier(.4,0,.2,1);
+}
+.nav-btn.active .nav-icon {
+background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+transform: translateY(-2px);
+}
+.nav-btn.active .nav-label { color: var(--brand); font-weight: 700; }
+.nav-btn.active .nav-dot { opacity: 1; transform: scale(1); }
+#splash {
+background: linear-gradient(160deg, #1e1b4b 0%, #312E81 40%, #4338CA 75%, #5B51F0 100%);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 0;
+}
+.splash-logo {
+width: 84px; height: 84px; border-radius: 26px;
+background: rgba(255,255,255,.14);
+border: 1px solid rgba(255,255,255,.2);
+display: flex; align-items: center; justify-content: center;
+font-family: var(--font-serif);
+font-size: 42px; color: #fff;
+margin-bottom: 20px;
+box-shadow: 0 8px 24px rgba(0,0,0,.2);
+}
+.splash-name { font-size: 32px; font-weight: 300; color: #fff; letter-spacing: -1px; margin-bottom: 8px; }
+.splash-tagline { font-size: 14px; color: rgba(255,255,255,.6); margin-bottom: 56px; text-align: center; padding: 0 40px; line-height: 1.5; }
+.btn-white {
+background: #fff; color: var(--brand);
+border: none; border-radius: 16px;
+padding: 17px 48px; font-size: 16px; font-weight: 700;
+font-family: var(--font); cursor: pointer;
+width: calc(100% - 48px);
+transition: all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 8px 24px rgba(0,0,0,.2), 0 2px 6px rgba(0,0,0,.1);
+letter-spacing: .01em;
+}
+.btn-white:active { transform: scale(.97) translateY(1px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+.splash-sub { font-size: 12px; color: rgba(255,255,255,.45); margin-top: 14px; }
+#onboarding { background: #fff; }
+.ob-header {
+padding: 16px 24px 0;
+display: flex; align-items: center; gap: 12px;
+}
+.ob-back { background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; color: var(--gray-800); }
+.ob-progress { flex: 1; height: 3px; background: var(--gray-200); border-radius: 2px; overflow: hidden; }
+.ob-progress-fill { height: 100%; background: var(--brand); border-radius: 2px; transition: width .4s ease; }
+.ob-step-label { font-size: 12px; color: var(--gray-400); }
+.ob-content { padding: 28px 24px; }
+.ob-eyebrow { font-size: 11px; font-weight: 600; color: var(--brand); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.ob-q { font-size: 22px; font-weight: 500; color: var(--gray-900); line-height: 1.25; margin-bottom: 6px; font-family: var(--font-serif); }
+.ob-sub { font-size: 13px; color: var(--gray-400); margin-bottom: 28px; line-height: 1.5; }
+.ob-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.ob-opt {
+display: flex; align-items: center; gap: 14px;
+background: #fff; border: 1.5px solid rgba(0,0,0,.07);
+border-radius: var(--radius); padding: 14px 16px;
+cursor: pointer; transition: all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+.ob-opt:active { transform: scale(.98); }
+.ob-opt.sel {
+border-color: var(--brand);
+background: linear-gradient(135deg, #EEF2FF, #E0E7FF);
+box-shadow: 0 3px 12px rgba(67,56,202,.15);
+}
+.ob-opt-icon { font-size: 22px; flex-shrink: 0; }
+.ob-opt-text .ob-opt-label { font-size: 14px; font-weight: 500; color: var(--gray-800); }
+.ob-opt.sel .ob-opt-label { color: var(--brand-dark); }
+.ob-opt-text .ob-opt-desc { font-size: 12px; color: var(--gray-400); margin-top: 1px; }
+.ob-opt-check {
+margin-left: auto; width: 22px; height: 22px; border-radius: 50%;
+border: 1.5px solid var(--gray-300); display: flex; align-items: center; justify-content: center;
+flex-shrink: 0; font-size: 12px; color: #fff;
+transition: all .2s;
+}
+.ob-opt.sel .ob-opt-check { background: var(--brand); border-color: var(--brand); }
+.ob-multi { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.ob-chip {
+display: flex; align-items: center; gap: 14px;
+background: #fff; border: 1.5px solid rgba(0,0,0,.07);
+border-radius: var(--radius); padding: 14px 16px;
+cursor: pointer; transition: all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+.ob-chip.sel {
+border-color: var(--brand);
+background: linear-gradient(135deg, #EEF2FF, #E0E7FF);
+box-shadow: 0 3px 12px rgba(67,56,202,.15);
+}
+.ob-chip-icon { font-size: 20px; }
+.ob-chip-text { flex: 1; }
+.ob-chip-label { font-size: 14px; font-weight: 500; color: var(--gray-800); }
+.ob-chip.sel .ob-chip-label { color: var(--brand-dark); }
+.ob-chip-sub { font-size: 11px; color: var(--gray-400); }
+.ob-chip-check { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--gray-300); display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; transition: all .2s; }
+.ob-chip.sel .ob-chip-check { background: var(--brand); border-color: var(--brand); }
+.btn-brand {
+width: 100%; padding: 16px; border-radius: 16px;
+background: linear-gradient(135deg, #4338CA 0%, #5B51F0 50%, #6366F1 100%);
+color: #fff; border: none;
+font-size: 16px; font-weight: 600; font-family: var(--font);
+cursor: pointer;
+transition: all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 4px 14px rgba(67,56,202,.35), 0 1px 3px rgba(67,56,202,.2);
+letter-spacing: .01em;
+position: relative; overflow: hidden;
+}
+.btn-brand::after {
+content: '';
+position: absolute; inset: 0;
+background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 60%);
+border-radius: inherit;
+}
+.btn-brand:active { transform: scale(.97) translateY(1px); box-shadow: 0 2px 6px rgba(67,56,202,.25); opacity: .95; }
+.btn-brand:disabled { opacity: .35; cursor: default; transform: none; box-shadow: none; }
+.score-result-screen { padding: 24px; background: #fff; }
+.score-hero {
+background: linear-gradient(135deg, #312E81 0%, #4338CA 55%, #5B51F0 100%);
+border-radius: 24px; padding: 32px 24px;
+text-align: center; margin-bottom: 20px;
+box-shadow: 0 8px 28px rgba(67,56,202,.35);
+position: relative; overflow: hidden;
+}
+.score-hero::before {
+content: ''; position: absolute;
+top: -40px; right: -30px;
+width: 150px; height: 150px; border-radius: 50%;
+background: rgba(255,255,255,.06); pointer-events: none;
+}
+.score-hero-label { font-size: 11px; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px; }
+.score-ring-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto 16px; }
+.score-ring-svg { width: 140px; height: 140px; }
+.score-ring-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+.score-ring-num { font-size: 40px; font-weight: 600; color: #fff; line-height: 1; }
+.score-ring-denom { font-size: 14px; color: rgba(255,255,255,.5); }
+.score-hero-title { font-size: 20px; font-weight: 500; color: #fff; margin-bottom: 6px; font-family: var(--font-serif); }
+.score-hero-sub { font-size: 13px; color: rgba(255,255,255,.65); line-height: 1.5; }
+.score-pills { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+.score-pill { font-size: 12px; padding: 5px 12px; border-radius: 20px; font-weight: 500; }
+.pill-ok { background: rgba(16,185,129,.2); color: #6EE7B7; }
+.pill-warn { background: rgba(245,158,11,.2); color: #FCD34D; }
+.pill-bad { background: rgba(239,68,68,.2); color: #FCA5A5; }
+.breakdown-title { font-size: 12px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+.bd-item {
+display: flex; align-items: center; gap: 12px;
+background: var(--gray-50); border: 1px solid var(--gray-200);
+border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px;
+}
+.bd-ico { font-size: 18px; width: 32px; text-align: center; }
+.bd-info { flex: 1; }
+.bd-name { font-size: 13px; font-weight: 500; color: var(--gray-800); }
+.bd-reason { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.bd-right { text-align: right; }
+.bd-pts { font-size: 13px; font-weight: 600; }
+.bd-bar-wrap { width: 48px; height: 3px; background: var(--gray-200); border-radius: 2px; overflow: hidden; margin-top: 4px; margin-left: auto; }
+.bd-bar-fill { height: 100%; border-radius: 2px; }
+.inflation-alert {
+background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+border: 1.5px solid #FDE68A;
+border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px;
+box-shadow: 0 2px 8px rgba(245,158,11,.1);
+}
+.inf-title { font-size: 13px; font-weight: 600; color: #92400E; margin-bottom: 4px; }
+.inf-body { font-size: 12px; color: var(--gray-600); line-height: 1.5; }
+.cta-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.btn-outline {
+width: 100%; padding: 15px; border-radius: 16px;
+background: #fff; color: var(--brand);
+border: 1.5px solid rgba(67,56,202,.3);
+font-size: 15px; font-weight: 600; font-family: var(--font);
+cursor: pointer;
+transition: all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 1px 4px rgba(67,56,202,.08);
+}
+.btn-outline:active { transform: scale(.97); background: var(--brand-light); border-color: var(--brand); }
+#home { background: var(--gray-50); }
+.home-header { padding: 16px 20px 0; background: var(--gray-50); }
+.home-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.home-greeting { font-size: 13px; color: var(--gray-400); }
+.home-title { font-size: 22px; font-weight: 500; color: var(--gray-900); font-family: var(--font-serif); }
+.home-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; }
+.score-card {
+background: linear-gradient(135deg, #312E81 0%, #4338CA 55%, #5B51F0 100%);
+border-radius: 22px; margin: 0 20px 20px;
+padding: 20px;  cursor: pointer;
+transition: transform .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 8px 24px rgba(67,56,202,.35), 0 2px 8px rgba(67,56,202,.2);
+position: relative; overflow: hidden;
+}
+.score-card::before {
+content: '';
+position: absolute;
+top: -40px; right: -20px;
+width: 140px; height: 140px;
+border-radius: 50%;
+background: rgba(255,255,255,.07);
+pointer-events: none;
+}
+.score-card::after {
+content: '';
+position: absolute;
+bottom: -30px; left: 30px;
+width: 90px; height: 90px;
+border-radius: 50%;
+background: rgba(255,255,255,.05);
+pointer-events: none;
+}
+.score-card:active { transform: scale(.98); }
+.score-card-top { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+.score-circle {
+width: 64px; height: 64px; border-radius: 50%;
+background: rgba(255,255,255,.15);
+display: flex; align-items: center; justify-content: center;
+flex-direction: column;
+}
+.score-circle-num { font-size: 22px; font-weight: 600; color: #fff; line-height: 1; }
+.score-circle-denom { font-size: 10px; color: rgba(255,255,255,.6); }
+.score-card-text .sc-title { font-size: 16px; font-weight: 500; color: #fff; font-family: var(--font-serif); }
+.score-card-text .sc-sub { font-size: 12px; color: rgba(255,255,255,.65); margin-top: 3px; }
+.score-card-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.sc-pill { font-size: 11px; padding: 4px 10px; border-radius: 16px; font-weight: 500; }
+.section-header { padding: 0 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.section-title { font-size: 13px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; }
+.section-link { font-size: 13px; color: var(--brand); font-weight: 500; background: none; border: none; cursor: pointer; font-family: var(--font); }
+.poliza-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.poliza-card {
+background: #fff;
+border: 1px solid rgba(0,0,0,.06);
+border-radius: var(--radius); padding: 14px 16px;
+display: flex; align-items: center; gap: 12px;
+cursor: pointer;
+transition: all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 1px 4px rgba(0,0,0,.05), 0 0 0 0 rgba(67,56,202,0);
+}
+.poliza-card:active { transform: scale(.98); box-shadow: 0 4px 12px rgba(67,56,202,.12); border-color: rgba(67,56,202,.2); }
+.pol-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.pol-info { flex: 1; }
+.pol-name { font-size: 14px; font-weight: 500; color: var(--gray-800); }
+.pol-co { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+.pol-right { text-align: right; }
+.pol-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 8px; }
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-amber { background: var(--amber-light); color: var(--amber); }
+.badge-red { background: var(--red-light); color: var(--red); }
+.pol-due { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+.btn-sin {
+width:100%; padding:14px; border-radius:14px;
+background: linear-gradient(135deg, #FFF5F5, #FEF2F2);
+color:var(--red); border:1.5px solid #FECACA;
+font-size:14px; font-weight:600; font-family:var(--font);
+cursor:pointer; transition:all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 2px 8px rgba(239,68,68,.1);
+}
+.btn-sin:active { transform:scale(.97); opacity:.9; }
+.micro-card {
+background:#fff; border:1px solid rgba(0,0,0,.06);
+border-radius:var(--radius); padding:16px;
+cursor:pointer; transition:all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+.micro-card:active { transform:scale(.98); }
+.micro-card.featured { border:2px solid var(--brand); box-shadow: 0 4px 16px rgba(67,56,202,.15); }
+.sin-step-pill { flex:1; text-align:center; padding:5px 2px; border-radius:8px; font-size:10px; font-weight:500; background:var(--gray-100); color:var(--gray-400); transition: all .2s; }
+.sin-step-pill.active { background:var(--brand-light); color:var(--brand); font-weight:700; }
+.sin-step-pill.done { background:var(--green-light); color:var(--green); }
+.sin-type-btn {
+background:#fff; border:1.5px solid rgba(0,0,0,.07);
+border-radius:14px; padding:16px 12px; text-align:center;
+cursor:pointer; transition:all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+.sin-type-btn.sel {
+background: linear-gradient(135deg, #EEF2FF, #E0E7FF);
+border:1.5px solid var(--brand);
+box-shadow: 0 3px 10px rgba(67,56,202,.15);
+}
+.sin-type-btn.sel div:nth-child(2) { color:var(--brand-dark); font-weight:600; }
+.sin-doc-item { display:flex; align-items:flex-start; gap:12px; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-sm); padding:12px 14px; cursor:pointer; transition: border-color .2s; }
+.sin-doc-item.checked { border-color:var(--green); background:var(--green-light); }
+.sin-doc-check { width:22px; height:22px; border-radius:6px; border:1.5px solid var(--gray-300); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; transition:all .2s; margin-top:1px; }
+.sin-doc-item.checked .sin-doc-check { background:var(--green); border-color:var(--green); color:#fff; }
+.sin-doc-req { font-size:11px; font-weight:600; padding:2px 7px; border-radius:6px; margin-top:4px; display:inline-block; }
+.req-ob { background:#FEE2E2; color:#991B1B; }
+.req-op { background:var(--gray-100); color:var(--gray-500); }
+.sin-foto-slot { background:var(--gray-50); border:1.5px dashed var(--gray-300); border-radius:12px; padding:14px 6px; text-align:center; cursor:pointer; transition:all .2s; }
+.sin-foto-slot.uploaded { border:1.5px solid var(--green); background:var(--green-light); }
+.poliza-card.tercero { border-left: 3px solid #7C3AED; border-radius: 0 var(--radius) var(--radius) 0; }
+.tercero-divider { display: flex; align-items: center; gap: 8px; padding: 4px 20px 8px; }
+.tercero-divider-line { flex: 1; height: 0.5px; background: var(--gray-200); }
+.tercero-divider-text { font-size: 10px; color: var(--gray-400); white-space: nowrap; font-weight: 500; }
+.add-card {
+background: linear-gradient(135deg, #FAFBFF, #F5F7FF);
+border: 1.5px dashed rgba(67,56,202,.3);
+border-radius: var(--radius); padding: 16px;
+display: flex; align-items: center; gap: 12px;
+cursor: pointer; margin: 0 20px 20px;
+transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+.add-card:active { transform: scale(.98); border-color: var(--brand); background: var(--brand-light); }
+.add-icon { font-size: 20px; }
+.add-text { font-size: 14px; color: var(--gray-400); }
+.alerts-list { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.alert-item {
+background: #fff; border: 1px solid rgba(0,0,0,.06);
+border-radius: var(--radius-sm); padding: 13px 14px;
+display: flex; align-items: center; gap: 12px;
+cursor: pointer;
+box-shadow: 0 1px 3px rgba(0,0,0,.04);
+transition: all .18s cubic-bezier(.4,0,.2,1);
+}
+.alert-item:active { transform: scale(.98); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.alert-text { font-size: 13px; color: var(--gray-700); flex: 1; }
+.alert-time { font-size: 11px; color: var(--gray-400); }
+#analysis { background: var(--gray-50); }
+.analysis-header { padding: 16px 20px 0; }
+.analysis-hero {
+background: linear-gradient(135deg, #1e1b4b 0%, #312E81 55%, #4338CA 100%);
+border-radius: 20px;
+padding: 20px; margin: 16px 20px; cursor: pointer;
+box-shadow: 0 6px 20px rgba(49,46,129,.35);
+transition: transform .2s;
+position: relative; overflow: hidden;
+}
+.analysis-hero::after {
+content: '';
+position: absolute; top: -20px; right: -20px;
+width: 100px; height: 100px; border-radius: 50%;
+background: rgba(255,255,255,.06); pointer-events: none;
+}
+.analysis-hero:active { transform: scale(.98); }
+.ah-eyebrow { font-size: 10px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+.ah-title { font-size: 16px; font-weight: 500; color: #fff; font-family: var(--font-serif); margin-bottom: 4px; }
+.ah-sub { font-size: 12px; color: rgba(255,255,255,.6); }
+.ah-tag { display: inline-block; margin-top: 12px; background: rgba(255,255,255,.14); color: rgba(255,255,255,.85); font-size: 11px; padding: 5px 12px; border-radius: 20px; font-weight: 500; }
+.coverage-list { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.cov-card {
+background: #fff; border: 1px solid rgba(0,0,0,.06);
+border-radius: var(--radius-sm); padding: 13px 14px;
+cursor: pointer;
+box-shadow: 0 1px 3px rgba(0,0,0,.04);
+transition: all .18s cubic-bezier(.4,0,.2,1);
+}
+.cov-card:active { transform: scale(.98); }
+.cov-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.cov-name { font-size: 14px; font-weight: 500; color: var(--gray-800); }
+.cov-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 10px; letter-spacing: .02em; }
+.cov-desc { font-size: 12px; color: var(--gray-400); }
+.gap-card {
+background: linear-gradient(135deg, #FFF5F5 0%, #FEF2F2 100%);
+border: 1.5px solid #FECACA;
+border-radius: var(--radius-sm); padding: 14px;
+margin: 0 20px 10px; cursor: pointer;
+transition: transform .18s;
+box-shadow: 0 2px 8px rgba(239,68,68,.08);
+}
+.gap-card:active { transform: scale(.98); }
+.gap-title { font-size: 13px; font-weight: 600; color: #991B1B; margin-bottom: 4px; }
+.gap-body { font-size: 12px; color: var(--gray-600); line-height: 1.5; }
+#quotes { background: var(--gray-50); }
+.quotes-header { padding: 16px 20px 0; }
+.quotes-filter { display: flex; gap: 8px; padding: 12px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.quotes-filter::-webkit-scrollbar { display: none; }
+.filter-chip {
+white-space: nowrap; padding: 8px 18px;
+border-radius: 22px; font-size: 13px; font-weight: 600;
+background: #fff; color: var(--gray-500);
+border: 1.5px solid var(--gray-200);
+cursor: pointer; font-family: var(--font);
+transition: all .2s cubic-bezier(.4,0,.2,1); flex-shrink: 0;
+box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+.filter-chip.active {
+background: linear-gradient(135deg, #4338CA, #5B51F0);
+color: #fff; border-color: transparent;
+box-shadow: 0 3px 10px rgba(67,56,202,.3);
+}
+.compare-strip {
+margin: 0 20px 16px;
+background: #fff; border: 1px solid rgba(0,0,0,.06);
+border-radius: var(--radius-sm); padding: 14px 14px;
+box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+.compare-label { font-size: 11px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.compare-bars { display: flex; gap: 4px; align-items: flex-end; height: 32px; }
+.compare-bar-item { flex: 1; border-radius: 4px 4px 0 0; display: flex; align-items: flex-end; justify-content: center; }
+.compare-bar-label { font-size: 9px; font-weight: 600; padding-bottom: 4px; }
+.quotes-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.quote-card {
+background: #fff; border: 1px solid rgba(0,0,0,.07);
+border-radius: var(--radius); padding: 16px;
+cursor: pointer;
+transition: all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+.quote-card:active { transform: scale(.98); }
+.quote-card.best {
+border: 2px solid var(--brand);
+box-shadow: 0 4px 20px rgba(67,56,202,.18), 0 1px 4px rgba(67,56,202,.1);
+}
+.best-label {
+background: linear-gradient(135deg, #4338CA, #6366F1);
+color: #fff; font-size: 10px; font-weight: 700;
+padding: 4px 12px; border-radius: 20px;
+display: inline-block; margin-bottom: 10px;
+letter-spacing: .03em;
+box-shadow: 0 2px 8px rgba(67,56,202,.3);
+}
+.qc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.qc-company { font-size: 15px; font-weight: 500; color: var(--gray-800); }
+.qc-rating { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+.qc-price { text-align: right; }
+.qc-amount { font-size: 22px; font-weight: 600; color: var(--gray-900); }
+.qc-period { font-size: 11px; color: var(--gray-400); }
+.qc-features { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.qc-feat { font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 3px 8px; border-radius: 6px; }
+.qc-btn {
+width: 100%; padding: 13px; border-radius: 12px;
+background: linear-gradient(135deg, #4338CA 0%, #5B51F0 100%);
+color: #fff; border: none; font-size: 14px; font-weight: 600;
+font-family: var(--font); cursor: pointer;
+transition: all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 3px 10px rgba(67,56,202,.3);
+}
+.qc-btn:active { transform: scale(.97); opacity: .9; }
+.quote-card:not(.best) .qc-btn {
+background: var(--gray-100); color: var(--gray-700);
+box-shadow: none;
+}
+#profile { background: var(--gray-50); }
+.profile-header { padding: 16px 20px 24px; text-align: center; }
+.profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 600; color: #fff; margin: 0 auto 12px; }
+.profile-name { font-size: 22px; font-weight: 500; color: var(--gray-900); font-family: var(--font-serif); }
+.profile-sub { font-size: 13px; color: var(--gray-400); margin-top: 4px; }
+.profile-score {
+background: linear-gradient(135deg, #312E81 0%, #4338CA 60%, #5B51F0 100%);
+border-radius: 18px; margin: 0 20px 20px; padding: 16px 20px;
+display: flex; align-items: center; gap: 16px; cursor: pointer;
+box-shadow: 0 6px 18px rgba(67,56,202,.3);
+transition: transform .2s;
+}
+.profile-score:active { transform: scale(.98); }
+.ps-circle { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; flex-direction: column; flex-shrink: 0; }
+.ps-num { font-size: 20px; font-weight: 600; color: #fff; line-height: 1; }
+.ps-denom { font-size: 10px; color: rgba(255,255,255,.5); }
+.ps-text .ps-title { font-size: 15px; font-weight: 500; color: #fff; }
+.ps-text .ps-sub { font-size: 12px; color: rgba(255,255,255,.65); margin-top: 2px; }
+.menu-list { padding: 0 20px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.menu-item {
+background: #fff; border: 1px solid rgba(0,0,0,.06);
+border-radius: var(--radius-sm); padding: 15px 16px;
+display: flex; align-items: center; gap: 12px;
+cursor: pointer;
+transition: all .2s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+.menu-item:active { transform: scale(.98) translateX(2px); background: var(--gray-50); box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+.menu-icon { font-size: 20px; width: 32px; text-align: center; }
+.menu-label { font-size: 14px; font-weight: 500; color: var(--gray-800); flex: 1; }
+.menu-arrow { font-size: 14px; color: var(--gray-300); }
+.modal-overlay {
+position: absolute; inset: 0;
+background: rgba(15,12,40,.55);
+backdrop-filter: blur(2px);
+-webkit-backdrop-filter: blur(2px);
+display: flex; align-items: flex-end;
+z-index: 100;
+opacity: 0; pointer-events: none;
+transition: opacity .3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-sheet {
+background: #fff; width: 100%;
+border-radius: 28px 28px 0 0;
+padding: 20px 24px 40px;
+transform: translateY(100%);
+transition: transform .38s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 -8px 40px rgba(0,0,0,.12);
+}
+.modal-overlay.open .modal-sheet { transform: translateY(0); }
+.modal-handle {
+width: 40px; height: 4px; background: var(--gray-200);
+border-radius: 2px; margin: 0 auto 20px;
+}
+.modal-title { font-size: 18px; font-weight: 500; color: var(--gray-900); margin-bottom: 6px; font-family: var(--font-serif); }
+.modal-sub { font-size: 13px; color: var(--gray-400); margin-bottom: 20px; line-height: 1.5; }
+.loading-screen {
+position: absolute; inset: 0;
+background: linear-gradient(160deg, #1e1b4b 0%, #312E81 45%, #4338CA 100%);
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+z-index: 200; transition: opacity .5s;
+}
+.loading-logo { font-family: var(--font-serif); font-size: 52px; color: #fff; margin-bottom: 28px; }
+.loading-spinner { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,.15); border-top-color: rgba(255,255,255,.9); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast {
+position: absolute; top: 56px; left: 50%;
+transform: translateX(-50%) translateY(-20px);
+white-space: nowrap;
+background: rgba(17,24,39,.92);
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+color: #fff; font-size: 13px; font-weight: 500;
+padding: 11px 22px; border-radius: 22px;
+z-index: 300; opacity: 0;
+transition: all .3s cubic-bezier(.4,0,.2,1);
+pointer-events: none;
+border: 1px solid rgba(255,255,255,.1);
+box-shadow: 0 4px 16px rgba(0,0,0,.25);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.ref-hero {
+background: linear-gradient(135deg, #1e1b4b 0%, #312E81 55%, #4338CA 100%);
+margin: 0 20px 20px;
+border-radius: 20px;
+padding: 24px 20px;
+text-align: center;
+box-shadow: 0 6px 20px rgba(49,46,129,.3);
+}
+.ref-hero-tag { font-size: 11px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+.ref-pts-circle {
+width: 80px; height: 80px; border-radius: 50%;
+background: rgba(255,255,255,.12);
+margin: 0 auto 14px;
+display: flex; flex-direction: column;
+align-items: center; justify-content: center;
+}
+.ref-pts-num { font-size: 26px; font-weight: 600; color: #fff; line-height: 1; }
+.ref-pts-label { font-size: 10px; color: rgba(255,255,255,.5); }
+.ref-hero-title { font-size: 16px; font-weight: 500; color: #fff; font-family: var(--font-serif); margin-bottom: 4px; }
+.ref-hero-sub { font-size: 12px; color: rgba(255,255,255,.55); line-height: 1.5; }
+.ref-code-box {
+background: #fff;
+border: 1.5px dashed var(--brand);
+border-radius: 14px;
+margin: 0 20px 20px;
+padding: 16px;
+display: flex; align-items: center; gap: 12px;
+}
+.ref-code { font-size: 20px; font-weight: 600; color: var(--brand); letter-spacing: .12em; flex: 1; }
+.ref-copy-btn {
+background: var(--brand-light); color: var(--brand);
+border: none; border-radius: 10px;
+padding: 8px 16px; font-size: 13px; font-weight: 600;
+font-family: var(--font); cursor: pointer;
+transition: opacity .2s;
+}
+.ref-copy-btn:active { opacity: .7; }
+.share-row { display: flex; gap: 10px; margin: 0 20px 20px; }
+.share-btn {
+flex: 1; padding: 12px 8px; border-radius: 12px;
+border: 1px solid var(--gray-200); background: #fff;
+display: flex; flex-direction: column; align-items: center; gap: 4px;
+cursor: pointer; transition: all .2s; font-family: var(--font);
+}
+.share-btn:active { transform: scale(.97); background: var(--gray-50); }
+.share-btn-icon { font-size: 20px; }
+.share-btn-label { font-size: 11px; color: var(--gray-600); font-weight: 500; }
+.levels-list { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.level-card {
+background: #fff; border: 1px solid var(--gray-200);
+border-radius: var(--radius-sm); padding: 12px 14px;
+display: flex; align-items: center; gap: 12px;
+}
+.level-card.active { border-color: var(--brand); background: var(--brand-light); }
+.level-icon { font-size: 22px; width: 32px; text-align: center; flex-shrink: 0; }
+.level-info { flex: 1; }
+.level-name { font-size: 13px; font-weight: 500; color: var(--gray-800); }
+.level-card.active .level-name { color: var(--brand-dark); }
+.level-desc { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.level-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 8px; }
+.badge-done { background: var(--green-light); color: var(--green); }
+.badge-active { background: var(--brand-light); color: var(--brand); }
+.badge-lock { background: var(--gray-100); color: var(--gray-400); }
+.ref-list { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.ref-item {
+background: #fff; border: 1px solid var(--gray-200);
+border-radius: var(--radius-sm); padding: 11px 14px;
+display: flex; align-items: center; gap: 12px;
+}
+.ref-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0; }
+.ref-info { flex: 1; }
+.ref-name { font-size: 13px; font-weight: 500; color: var(--gray-800); }
+.ref-status-text { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+.ref-reward { font-size: 12px; font-weight: 600; }
+.ref-reward.earned { color: var(--green); }
+.ref-reward.pending { color: var(--amber); }
+.back-arrow-btn {
+width: 36px; height: 36px; border-radius: 12px;
+background: #fff; border: 1px solid rgba(0,0,0,.08);
+display: flex; align-items: center; justify-content: center;
+cursor: pointer; flex-shrink: 0;
+box-shadow: 0 1px 4px rgba(0,0,0,.08);
+transition: all .18s cubic-bezier(.4,0,.2,1);
+font-size: 18px; color: var(--gray-700);
+font-family: var(--font);
+}
+.back-arrow-btn:active { transform: scale(.92); background: var(--gray-50); }
+.tab-header {
+padding: 14px 20px 0;
+display: flex; align-items: center; gap: 12px;
+flex-shrink: 0;
+background: var(--gray-50);
+}
+.tab-header-text { flex: 1; }
+.tab-header-greeting { font-size: 12px; color: var(--gray-400); line-height: 1.2; }
+.tab-header-title { font-size: 21px; font-weight: 500; color: var(--gray-900); font-family: var(--font-serif); line-height: 1.2; }
+.tab-header-action {
+width: 36px; height: 36px; border-radius: 12px;
+background: var(--brand-light);
+display: flex; align-items: center; justify-content: center;
+font-size: 17px; cursor: pointer; flex-shrink: 0;
+transition: all .18s;
+}
+.tab-header-action:active { transform: scale(.92); }
+.subscreen {
+position: absolute; inset: 0;
+background: var(--gray-50);
+transform: translateX(100%);
+transition: transform .35s cubic-bezier(.4,0,.2,1);
+display: flex; flex-direction: column;
+z-index: 50;
+}
+.subscreen.open { transform: translateX(0); }
+.subscreen-header {
+display: flex; align-items: center; gap: 12px;
+padding: 14px 20px 0; background: var(--gray-50);
+flex-shrink: 0;
+}
+.back-btn {
+width: 36px; height: 36px; border-radius: 12px;
+background: #fff; border: 1px solid rgba(0,0,0,.08);
+display: flex; align-items: center; justify-content: center;
+cursor: pointer; font-size: 18px; color: var(--gray-700);
+font-family: var(--font); flex-shrink: 0;
+box-shadow: 0 1px 4px rgba(0,0,0,.08);
+transition: all .18s cubic-bezier(.4,0,.2,1);
+line-height: 1;
+}
+.back-btn:active { transform: scale(.90); background: var(--gray-50); }
+.subscreen-title { font-size: 18px; font-weight: 500; color: var(--gray-900); font-family: var(--font-serif); }
+.fin-hero {
+background: linear-gradient(135deg, #1e1b4b 0%, #312E81 60%, #4338CA 100%);
+margin: 0 20px 20px;
+border-radius: 22px;
+padding: 22px 20px 20px;
+position: relative;
+overflow: hidden;
+}
+.fin-hero::before {
+content: '';
+position: absolute;
+top: -30px; right: -30px;
+width: 120px; height: 120px;
+border-radius: 50%;
+background: rgba(255,255,255,.05);
+}
+.fin-hero::after {
+content: '';
+position: absolute;
+bottom: -20px; left: 40px;
+width: 80px; height: 80px;
+border-radius: 50%;
+background: rgba(255,255,255,.04);
+}
+.fin-hero-label { font-size: 10px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+.fin-hero-amount { font-size: 36px; font-weight: 300; color: #fff; letter-spacing: -1.5px; line-height: 1; margin-bottom: 4px; font-family: var(--font-serif); }
+.fin-hero-period { font-size: 12px; color: rgba(255,255,255,.45); margin-bottom: 18px; }
+.fin-hero-stats { display: flex; gap: 0; }
+.fin-stat { flex: 1; }
+.fin-stat + .fin-stat { border-left: 1px solid rgba(255,255,255,.1); padding-left: 14px; margin-left: 14px; }
+.fin-stat-val { font-size: 16px; font-weight: 600; color: #fff; }
+.fin-stat-label { font-size: 10px; color: rgba(255,255,255,.45); margin-top: 2px; }
+.fin-toggle-row { display: flex; gap: 6px; padding: 0 20px; margin-bottom: 16px; background: var(--gray-100); border-radius: 14px; margin-left: 20px; margin-right: 20px; padding: 4px; }
+.fin-toggle-btn {
+flex: 1; padding: 9px 4px; border-radius: 10px;
+background: transparent; border: none;
+font-size: 12px; font-weight: 600; color: var(--gray-400);
+font-family: var(--font); cursor: pointer;
+transition: all .22s cubic-bezier(.4,0,.2,1);
+text-align: center;
+}
+.fin-toggle-btn.active {
+background: #fff; color: var(--brand-dark);
+box-shadow: 0 2px 8px rgba(67,56,202,.12), 0 1px 2px rgba(0,0,0,.06);
+}
+.fin-donut-wrap { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius); margin: 0 20px 16px; }
+.fin-donut-svg { width: 84px; height: 84px; flex-shrink: 0; }
+.fin-donut-legend { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.fin-legend-item { display: flex; align-items: center; gap: 7px; }
+.fin-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.fin-legend-label { font-size: 11px; color: var(--gray-600); flex: 1; }
+.fin-legend-pct { font-size: 11px; font-weight: 600; color: var(--gray-800); }
+.fin-pol-list { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.fin-pol-card {
+background: #fff; border: 1px solid var(--gray-200);
+border-radius: var(--radius-sm); padding: 12px 14px;
+}
+.fin-pol-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.fin-pol-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.fin-pol-name { font-size: 13px; font-weight: 500; color: var(--gray-800); flex: 1; }
+.fin-pol-amount { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+.fin-pol-bar-wrap { height: 4px; background: var(--gray-100); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+.fin-pol-bar { height: 100%; border-radius: 2px; transition: width .8s cubic-bezier(.4,0,.2,1); }
+.fin-pol-meta { display: flex; justify-content: space-between; }
+.fin-pol-co { font-size: 10px; color: var(--gray-400); }
+.fin-pol-pct { font-size: 10px; color: var(--gray-400); }
+.ahorro-hero {
+background: var(--green-light); border: 1.5px solid #A7F3D0;
+border-radius: 20px; margin: 0 20px 16px; padding: 18px 18px 16px;
+cursor: pointer; transition: transform .2s;
+}
+.ahorro-hero:active { transform: scale(.98); }
+.ahorro-hero-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.ahorro-badge { background: var(--green); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .04em; }
+.ahorro-arrow { font-size: 18px; color: var(--green); }
+.ahorro-amount { font-size: 30px; font-weight: 600; color: #065F46; letter-spacing: -1px; font-family: var(--font-serif); line-height: 1; margin-bottom: 3px; }
+.ahorro-period { font-size: 12px; color: #6EE7B7; font-weight: 500; margin-bottom: 10px; }
+.ahorro-desc { font-size: 12px; color: #047857; line-height: 1.5; }
+.ahorro-cards { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.ahorro-card {
+background: #fff; border: 1px solid var(--gray-200);
+border-radius: var(--radius-sm); padding: 12px 14px;
+display: flex; align-items: center; gap: 12px;
+cursor: pointer; transition: all .2s;
+}
+.ahorro-card:active { transform: scale(.98); }
+.ahorro-card-icon { font-size: 18px; width: 32px; text-align: center; flex-shrink: 0; }
+.ahorro-card-info { flex: 1; }
+.ahorro-card-title { font-size: 13px; font-weight: 500; color: var(--gray-800); }
+.ahorro-card-desc { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.ahorro-card-right { text-align: right; }
+.ahorro-card-save { font-size: 13px; font-weight: 700; color: var(--green); }
+.ahorro-card-period { font-size: 10px; color: var(--gray-400); }
+.comparador-wrap { margin: 0 20px 20px; background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 16px; }
+.comparador-title { font-size: 12px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 14px; }
+.comparador-row { display: flex; align-items: center; gap: 0; margin-bottom: 10px; }
+.comp-label { font-size: 11px; color: var(--gray-500); width: 56px; flex-shrink: 0; }
+.comp-bar-track { flex: 1; height: 20px; background: var(--gray-100); border-radius: 6px; overflow: hidden; position: relative; }
+.comp-bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+.comp-bar-val { font-size: 10px; font-weight: 600; color: #fff; white-space: nowrap; }
+.comp-delta { font-size: 11px; font-weight: 600; width: 50px; text-align: right; flex-shrink: 0; }
+.anual-card { margin: 0 20px 20px; background: var(--brand-dark); border-radius: 16px; padding: 16px 18px; }
+.anual-title { font-size: 11px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
+.anual-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+.anual-row:last-child { border-bottom: none; }
+.anual-row-label { font-size: 12px; color: rgba(255,255,255,.55); }
+.anual-row-val { font-size: 14px; font-weight: 600; color: #fff; }
+.anual-row-val.green { color: #6EE7B7; }
+.anual-row-val.amber { color: #FCD34D; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.anim { animation: fadeIn .4s ease both; }
+</style>
+</head>
+<body>
+<div id="app">
+<div class="loading-screen" id="loading">
+<div class="loading-logo">B</div>
+<div class="loading-spinner"></div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="screen active" id="splash-screen">
+<div id="splash">
+<div class="splash-logo">B</div>
+<div class="splash-name">Brokia</div>
+<div class="splash-tagline">Todas tus pólizas en un lugar. Tu protección real, analizada con IA.</div>
+<button class="btn-white" onclick="startOnboarding()">Empezar gratis</button>
+<div class="splash-sub">Sin tarjeta · Sin compromiso</div>
+</div>
+</div>
+<div class="screen" id="ob-screen">
+<div id="ob-inner" style="display:flex;flex-direction:column;height:100%;background:#fff">
+<div class="ob-header">
+<button class="ob-back" id="ob-back-btn" onclick="obBack()">←</button>
+<div class="ob-progress"><div class="ob-progress-fill" id="ob-fill" style="width:20%"></div></div>
+<div class="ob-step-label" id="ob-step-lbl">1 de 4</div>
+</div>
+<div class="ob-content scroll" id="ob-body"></div>
+</div>
+</div>
+<div class="screen" id="score-screen" style="display:flex;flex-direction:column;">
+<div style="display:flex;align-items:center;gap:12px;padding:14px 20px 0;background:#fff;flex-shrink:0">
+<button class="back-arrow-btn" onclick="goBack()">←</button>
+<div style="font-size:15px;font-weight:500;color:var(--gray-800);font-family:var(--font-serif)">Tu índice de cobertura</div>
+</div>
+<div class="scroll" style="background:#fff;flex:1">
+<div style="padding:20px 20px 8px">
+<div class="score-hero" id="score-hero">
+<div class="score-hero-label">Tu índice de cobertura</div>
+<div class="score-ring-wrap">
+<svg class="score-ring-svg" viewBox="0 0 140 140">
+<circle cx="70" cy="70" r="58" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="12"/>
+<circle id="result-arc" cx="70" cy="70" r="58" fill="none" stroke="#fff" stroke-width="12"
+stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="364"
+transform="rotate(-90 70 70)" style="transition:stroke-dashoffset 1.2s ease"/>
+</svg>
+<div class="score-ring-center">
+<div class="score-ring-num" id="result-num">0</div>
+<div class="score-ring-denom">/100</div>
+</div>
+</div>
+<div class="score-hero-title" id="result-title">Calculando...</div>
+<div class="score-hero-sub" id="result-sub"></div>
+<div class="score-pills" id="result-pills"></div>
+</div>
+<div style="margin-bottom:16px">
+<div class="breakdown-title">Desglose por rubro</div>
+<div id="result-breakdown"></div>
+</div>
+<div class="inflation-alert" id="result-inflation" style="display:none">
+<div class="inf-title">⚠ Alerta de infraseguro por inflación</div>
+<div class="inf-body" id="result-inflation-body"></div>
+</div>
+</div>
+</div>
+<div style="background:#fff;padding:12px 20px 20px;border-top:1px solid var(--gray-100);flex-shrink:0">
+<div style="display:flex;flex-direction:column;gap:10px">
+<button class="btn-brand" onclick="goMain()">Ir a mi billetera de pólizas</button>
+<button class="btn-outline" onclick="showToast('📄 Cargá tu primera póliza en PDF')">Cargar póliza para análisis IA</button>
+</div>
+</div>
+</div>
+<div class="screen" id="main-screen">
+<div id="home" class="screen active" style="position:relative;flex:1;overflow:hidden">
+<div class="tab-header" style="margin-bottom:14px">
+<div class="tab-header-text">
+<div class="tab-header-greeting">Hola de nuevo,</div>
+<div class="tab-header-title">Martín</div>
+</div>
+<div class="home-avatar" onclick="showTab('profile')">MR</div>
+</div>
+<div class="scroll">
+<div class="score-card" onclick="showTab('analysis')">
+<div class="score-card-top">
+<div class="score-circle">
+<div class="score-circle-num" id="home-score">72</div>
+<div class="score-circle-denom">/100</div>
+</div>
+<div class="score-card-text">
+<div class="sc-title">Protección moderada</div>
+<div class="sc-sub">2 brechas detectadas · Tocá para ver análisis</div>
+</div>
+</div>
+<div class="score-card-pills">
+<span class="sc-pill pill-ok">Auto ✓</span>
+<span class="sc-pill pill-ok">Hogar ✓</span>
+<span class="sc-pill pill-warn">Vida ~</span>
+<span class="sc-pill pill-bad">Salud ✗</span>
+</div>
+</div>
+<div class="section-header">
+<div class="section-title">Mis pólizas</div>
+<button class="section-link" onclick="openModal('modal-add')">+ Agregar</button>
+</div>
+<div class="poliza-list">
+<div class="poliza-card" onclick="openModal('modal-auto')">
+<div class="pol-icon" style="background:#EEF2FF">🚗</div>
+<div class="pol-info">
+<div class="pol-name">VW Gol 2019</div>
+<div class="pol-co">Federación Patronal</div>
+</div>
+<div class="pol-right">
+<div class="pol-badge badge-green">Vigente</div>
+<div class="pol-due">Vence 12 jun</div>
+</div>
+</div>
+<div class="poliza-card" onclick="openModal('modal-hogar')">
+<div class="pol-icon" style="background:#ECFDF5">🏠</div>
+<div class="pol-info">
+<div class="pol-name">Depto. Palermo</div>
+<div class="pol-co">Sancor Seguros</div>
+</div>
+<div class="pol-right">
+<div class="pol-badge badge-green">Vigente</div>
+<div class="pol-due">Vence 3 sep</div>
+</div>
+</div>
+<div class="poliza-card" onclick="openModal('modal-vida')">
+<div class="pol-icon" style="background:#FFFBEB">❤️</div>
+<div class="pol-info">
+<div class="pol-name">Vida individual</div>
+<div class="pol-co">La Meridional</div>
+</div>
+<div class="pol-right">
+<div class="pol-badge badge-amber">Revisar</div>
+<div class="pol-due">Suma baja</div>
+</div>
+</div>
+</div>
+<div class="tercero-divider">
+<div class="tercero-divider-line"></div>
+<div class="tercero-divider-text">de otro productor</div>
+<div class="tercero-divider-line"></div>
+</div>
+<div class="poliza-list" style="padding-top:0">
+<div class="poliza-card tercero" onclick="openModal('modal-tercero-auto')">
+<div class="pol-icon" style="background:#F3E8FF">🚗</div>
+<div class="pol-info">
+<div class="pol-name">Honda City 2022</div>
+<div class="pol-co">Galicia Seguros</div>
+</div>
+<div class="pol-right">
+<div class="pol-badge badge-purple">Otro prod.</div>
+<div class="pol-due">Vence 30 may</div>
+</div>
+</div>
+<div class="poliza-card tercero" onclick="showToast('Casa San Telmo · Zurich · Infraseguro 32%')">
+<div class="pol-icon" style="background:#F3E8FF">🏠</div>
+<div class="pol-info">
+<div class="pol-name">Casa San Telmo</div>
+<div class="pol-co">Zurich Argentina</div>
+</div>
+<div class="pol-right">
+<div class="pol-badge badge-purple">Otro prod.</div>
+<div class="pol-due">Vence 14 ago</div>
+</div>
+</div>
+</div>
+<div class="add-card" onclick="openModal('modal-add')">
+<div class="add-icon">➕</div>
+<div class="add-text">Cargar nueva póliza (PDF o foto)</div>
+</div>
+<div class="section-header">
+<div class="section-title">Microseguros</div>
+<button class="section-link" onclick="openModal('modal-microseguros')">Ver todos</button>
+</div>
+<div style="display:flex;gap:10px;padding:0 20px;overflow-x:auto;margin-bottom:20px;-webkit-overflow-scrolling:touch">
+<div style="display:flex;gap:10px;padding-bottom:4px">
+<div onclick="openMicroseguro('celular')" style="background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:14px 14px 12px;text-align:center;cursor:pointer;min-width:80px;flex-shrink:0;transition:all .2s">
+<div style="font-size:24px;margin-bottom:6px">📱</div>
+<div style="font-size:11px;font-weight:500;color:var(--gray-700)">Celular</div>
+<div style="font-size:9px;color:var(--gray-400);margin-top:2px">desde $2.800/mes</div>
+</div>
+<div onclick="openMicroseguro('bici')" style="background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:14px 14px 12px;text-align:center;cursor:pointer;min-width:80px;flex-shrink:0">
+<div style="font-size:24px;margin-bottom:6px">🚲</div>
+<div style="font-size:11px;font-weight:500;color:var(--gray-700)">Bicicleta</div>
+<div style="font-size:9px;color:var(--gray-400);margin-top:2px">desde $3.200/mes</div>
+</div>
+<div onclick="openMicroseguro('monopatin')" style="background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:14px 14px 12px;text-align:center;cursor:pointer;min-width:80px;flex-shrink:0">
+<div style="font-size:24px;margin-bottom:6px">🛴</div>
+<div style="font-size:11px;font-weight:500;color:var(--gray-700)">Monopatín</div>
+<div style="font-size:9px;color:var(--gray-400);margin-top:2px">desde $2.500/mes</div>
+</div>
+<div onclick="openMicroseguro('instrumento')" style="background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:14px 14px 12px;text-align:center;cursor:pointer;min-width:80px;flex-shrink:0">
+<div style="font-size:24px;margin-bottom:6px">🎸</div>
+<div style="font-size:11px;font-weight:500;color:var(--gray-700)">Instrumento</div>
+<div style="font-size:9px;color:var(--gray-400);margin-top:2px">desde $4.100/mes</div>
+</div>
+<div onclick="openMicroseguro('viaje')" style="background:var(--brand);border-radius:16px;padding:14px 14px 12px;text-align:center;cursor:pointer;min-width:80px;flex-shrink:0">
+<div style="font-size:24px;margin-bottom:6px">✈️</div>
+<div style="font-size:11px;font-weight:500;color:#fff">Viaje</div>
+<div style="font-size:9px;color:rgba(255,255,255,.6);margin-top:2px">desde $8.500</div>
+</div>
+<div onclick="openMicroseguro('laptop')" style="background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:14px 14px 12px;text-align:center;cursor:pointer;min-width:80px;flex-shrink:0">
+<div style="font-size:24px;margin-bottom:6px">💻</div>
+<div style="font-size:11px;font-weight:500;color:var(--gray-700)">Notebook</div>
+<div style="font-size:9px;color:var(--gray-400);margin-top:2px">desde $5.600/mes</div>
+</div>
+</div>
+</div>
+<div class="section-header">
+<div class="section-title">Alertas</div>
+</div>
+<div class="alerts-list">
+<div class="alert-item" onclick="showToast('Póliza de auto: vence en 45 días')">
+<div class="alert-dot" style="background:#F59E0B"></div>
+<div class="alert-text">Auto vence en 45 días</div>
+<div class="alert-time">hoy</div>
+</div>
+<div class="alert-item" onclick="showToast('Tu seguro de vida tiene suma asegurada baja')">
+<div class="alert-dot" style="background:#EF4444"></div>
+<div class="alert-text">Suma asegurada de vida desactualizada</div>
+<div class="alert-time">ayer</div>
+</div>
+<div class="alert-item" onclick="showToast('Recordá revisar coberturas cada 6 meses')">
+<div class="alert-dot" style="background:#10B981"></div>
+<div class="alert-text">Hogar renovado correctamente</div>
+<div class="alert-time">hace 3d</div>
+</div>
+</div>
+</div>
+</div>
+<div id="analysis" class="screen" style="position:absolute;inset:0;background:var(--gray-50)">
+<div class="tab-header" style="margin-bottom:12px">
+<button class="back-arrow-btn" onclick="navBack('home')">←</button>
+<div class="tab-header-text">
+<div class="tab-header-greeting">Análisis IA</div>
+<div class="tab-header-title">Tus coberturas</div>
+</div>
+<div class="tab-header-action">🤖</div>
+</div>
+<div class="scroll">
+<div class="analysis-hero" onclick="openModal('modal-ai')">
+<div class="ah-eyebrow">Análisis completo · VW Gol 2019</div>
+<div class="ah-title">Federación Patronal</div>
+<div class="ah-sub">47 cláusulas procesadas · hace 2 min</div>
+<div class="ah-tag">Tocá para ver informe completo →</div>
+</div>
+<div class="section-header">
+<div class="section-title">Coberturas detectadas</div>
+</div>
+<div class="coverage-list">
+<div class="cov-card" onclick="showToast('RC: daños a terceros hasta $15M')">
+<div class="cov-top">
+<div class="cov-name">Responsabilidad civil</div>
+<div class="cov-badge badge-green">Incluida</div>
+</div>
+<div class="cov-desc">Hasta $15.000.000 por daños a terceros</div>
+</div>
+<div class="cov-card" onclick="showToast('Robo total con franquicia del 20%')">
+<div class="cov-top">
+<div class="cov-name">Robo total</div>
+<div class="cov-badge badge-green">Incluida</div>
+</div>
+<div class="cov-desc">Valor de mercado · Franquicia 20%</div>
+</div>
+<div class="cov-card" onclick="showToast('Granizo: solo capot y techo, no laterales')">
+<div class="cov-top">
+<div class="cov-name">Granizo</div>
+<div class="cov-badge badge-amber">Parcial</div>
+</div>
+<div class="cov-desc">Solo capot y techo. Laterales no cubiertos</div>
+</div>
+<div class="cov-card" onclick="showToast('Robo parcial no incluido en tu plan')">
+<div class="cov-top">
+<div class="cov-name">Robo parcial</div>
+<div class="cov-badge badge-red">No cubierto</div>
+</div>
+<div class="cov-desc">Partes y accesorios no incluidos</div>
+</div>
+<div class="cov-card" onclick="showToast('Daño propio no incluido en terceros completo')">
+<div class="cov-top">
+<div class="cov-name">Daño propio</div>
+<div class="cov-badge badge-red">No cubierto</div>
+</div>
+<div class="cov-desc">Requiere plan Todo Riesgo</div>
+</div>
+</div>
+<div class="gap-card" onclick="showTab('quotes')">
+<div class="gap-title">⚠ 2 brechas de cobertura detectadas</div>
+<div class="gap-body">Asistencia en ruta y daño propio no están incluidos. Cotizá mejora desde acá →</div>
+</div>
+<div class="section-header">
+<div class="section-title">Alerta de infraseguro</div>
+</div>
+<div style="margin:0 20px 20px">
+<div class="inflation-alert">
+<div class="inf-title">⚠ Pérdida de valor real por inflación</div>
+<div class="inf-body">Tu suma asegurada de hogar fue contratada hace 14 meses. Estimamos que perdió un 28% de su valor real. Recomendamos actualizar la suma antes del próximo vencimiento.</div>
+</div>
+</div>
+<div style="padding:0 20px 8px">
+<button class="btn-brand" onclick="openModal('modal-asesor')">Hablar con productor matriculado</button>
+</div>
+</div>
+</div>
+<div id="quotes" class="screen" style="position:absolute;inset:0;background:var(--gray-50)">
+<div class="tab-header" style="margin-bottom:4px">
+<button class="back-arrow-btn" onclick="navBack('analysis')">←</button>
+<div class="tab-header-text">
+<div class="tab-header-greeting">Multicotizador</div>
+<div class="tab-header-title">Automotor</div>
+</div>
+<div style="text-align:right;font-size:11px;color:var(--gray-400);line-height:1.4">VW Gol 2019<br>Actualizado ahora</div>
+</div>
+<div class="quotes-filter">
+<button class="filter-chip active">Todos</button>
+<button class="filter-chip" onclick="filterChip(this)">Todo riesgo</button>
+<button class="filter-chip" onclick="filterChip(this)">Terceros completo</button>
+<button class="filter-chip" onclick="filterChip(this)">Terceros</button>
+</div>
+<div class="compare-strip">
+<div class="compare-label">Comparativa de precio mensual</div>
+<div class="compare-bars">
+<div class="compare-bar-item" style="height:100%;background:#4338CA;border-radius:4px 4px 0 0"><div class="compare-bar-label" style="color:#fff">$48k</div></div>
+<div class="compare-bar-item" style="height:86%;background:#818CF8;border-radius:4px 4px 0 0"><div class="compare-bar-label" style="color:#fff">$52k</div></div>
+<div class="compare-bar-item" style="height:76%;background:#C7D2FE;border-radius:4px 4px 0 0"><div class="compare-bar-label" style="color:#4338CA">$55k</div></div>
+<div class="compare-bar-item" style="height:66%;background:#E0E7FF;border-radius:4px 4px 0 0"><div class="compare-bar-label" style="color:#4338CA">$59k</div></div>
+<div class="compare-bar-item" style="height:58%;background:#F0F4FF;border-radius:4px 4px 0 0"><div class="compare-bar-label" style="color:#4338CA">$63k</div></div>
+</div>
+</div>
+<div class="scroll" style="padding-top:0">
+<div class="quotes-list">
+<div class="quote-card best">
+<div class="best-label">⭐ Mejor relación precio / cobertura</div>
+<div class="qc-top">
+<div>
+<div class="qc-company">Federación Patronal</div>
+<div class="qc-rating">★★★★☆ 4.2 · Todo riesgo</div>
+</div>
+<div class="qc-price">
+<div class="qc-amount">$48.200</div>
+<div class="qc-period">/ mes</div>
+</div>
+</div>
+<div class="qc-features">
+<span class="qc-feat">Todo riesgo</span>
+<span class="qc-feat">RC ilimitada</span>
+<span class="qc-feat">Asistencia 24hs</span>
+<span class="qc-feat">Auto sustituto</span>
+<span class="qc-feat">Granizo completo</span>
+</div>
+<button class="qc-btn" onclick="openModal('modal-contratar')">Contratar ahora</button>
+</div>
+<div class="quote-card">
+<div class="qc-top">
+<div>
+<div class="qc-company">Sancor Seguros</div>
+<div class="qc-rating">★★★★☆ 4.4 · Todo riesgo</div>
+</div>
+<div class="qc-price">
+<div class="qc-amount">$52.400</div>
+<div class="qc-period">/ mes</div>
+</div>
+</div>
+<div class="qc-features">
+<span class="qc-feat">Todo riesgo</span>
+<span class="qc-feat">RC $30M</span>
+<span class="qc-feat">Asistencia 24hs</span>
+</div>
+<button class="qc-btn" onclick="showToast('Contactando con Sancor Seguros...')">Ver detalles</button>
+</div>
+<div class="quote-card">
+<div class="qc-top">
+<div>
+<div class="qc-company">Allianz Argentina</div>
+<div class="qc-rating">★★★★★ 4.7 · Todo riesgo</div>
+</div>
+<div class="qc-price">
+<div class="qc-amount">$55.800</div>
+<div class="qc-period">/ mes</div>
+</div>
+</div>
+<div class="qc-features">
+<span class="qc-feat">Todo riesgo</span>
+<span class="qc-feat">RC $50M</span>
+<span class="qc-feat">App siniestros</span>
+</div>
+<button class="qc-btn" onclick="showToast('Contactando con Allianz...')">Ver detalles</button>
+</div>
+<div class="quote-card">
+<div class="qc-top">
+<div>
+<div class="qc-company">La Caja</div>
+<div class="qc-rating">★★★☆☆ 3.8 · Todo riesgo</div>
+</div>
+<div class="qc-price">
+<div class="qc-amount">$59.100</div>
+<div class="qc-period">/ mes</div>
+</div>
+</div>
+<div class="qc-features">
+<span class="qc-feat">Todo riesgo</span>
+<span class="qc-feat">RC $20M</span>
+</div>
+<button class="qc-btn" onclick="showToast('Contactando con La Caja...')">Ver detalles</button>
+</div>
+</div>
+</div>
+</div>
+<div id="profile" class="screen" style="position:absolute;inset:0;background:var(--gray-50)">
+<div class="tab-header" style="margin-bottom:0">
+<button class="back-arrow-btn" onclick="navBack('home')">←</button>
+<div class="tab-header-text">
+<div class="tab-header-greeting">Mi cuenta</div>
+<div class="tab-header-title">Perfil</div>
+</div>
+</div>
+<div class="scroll">
+<div class="profile-header">
+<div class="profile-avatar">MR</div>
+<div class="profile-name">Martín Rodríguez</div>
+<div class="profile-sub">Rosario, Santa Fe · Cliente desde abr 2026</div>
+</div>
+<div class="profile-score" onclick="showTab('analysis')">
+<div class="ps-circle">
+<div class="ps-num">72</div>
+<div class="ps-denom">/100</div>
+</div>
+<div class="ps-text">
+<div class="ps-title">Índice de cobertura</div>
+<div class="ps-sub">Protección moderada · 2 brechas</div>
+</div>
+</div>
+<div class="menu-list">
+<div class="menu-item" onclick="openModal('modal-add')">
+<div class="menu-icon">📄</div>
+<div class="menu-label">Mis pólizas</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('Historial de análisis IA')">
+<div class="menu-icon">🤖</div>
+<div class="menu-label">Historial de análisis</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="openReferidos()">
+<div class="menu-icon">🎁</div>
+<div class="menu-label">Referir un amigo</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="openModal('modal-asesor')">
+<div class="menu-icon">💬</div>
+<div class="menu-label">Contactar al productor</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('Notificaciones configuradas')">
+<div class="menu-icon">🔔</div>
+<div class="menu-label">Notificaciones</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('Privacidad y seguridad')">
+<div class="menu-icon">🔒</div>
+<div class="menu-label">Privacidad</div>
+<div class="menu-arrow">›</div>
+</div>
+</div>
+<div style="padding:0 20px;text-align:center">
+<div style="font-size:12px;color:var(--gray-400);margin-bottom:16px">Versión demo 1.0 · Brokia</div>
+<button class="btn-outline" onclick="backToSplash()">Volver al inicio</button>
+</div>
+</div>
+</div>
+<div id="referidos-screen" class="subscreen">
+<div class="subscreen-header">
+<button class="back-btn" onclick="closeReferidos()">←</button>
+<div class="subscreen-title">Referir un amigo</div>
+</div>
+<div class="scroll" style="padding-top:16px">
+<div class="ref-hero">
+<div class="ref-hero-tag">Tus puntos acumulados</div>
+<div class="ref-pts-circle">
+<div class="ref-pts-num" id="ref-pts-display">340</div>
+<div class="ref-pts-label">puntos</div>
+</div>
+<div class="ref-hero-title">Referí y ganás los dos</div>
+<div class="ref-hero-sub">Cada amigo que carga su póliza te suma puntos. Si contrata, ambos ganan una recompensa extra.</div>
+</div>
+<div style="padding:0 20px;margin-bottom:8px">
+<div class="section-title">Tu código personal</div>
+</div>
+<div class="ref-code-box">
+<div class="ref-code">BROKIA-MR72</div>
+<button class="ref-copy-btn" onclick="copyCode()">Copiar</button>
+</div>
+<div class="share-row">
+<button class="share-btn" onclick="showToast('Abriendo WhatsApp...')">
+<div class="share-btn-icon">💬</div>
+<div class="share-btn-label">WhatsApp</div>
+</button>
+<button class="share-btn" onclick="showToast('Compartiendo en Instagram...')">
+<div class="share-btn-icon">📸</div>
+<div class="share-btn-label">Instagram</div>
+</button>
+<button class="share-btn" onclick="showToast('Copiando link...')">
+<div class="share-btn-icon">🔗</div>
+<div class="share-btn-label">Link</div>
+</button>
+<button class="share-btn" onclick="showToast('Abriendo email...')">
+<div class="share-btn-icon">📧</div>
+<div class="share-btn-label">Email</div>
+</button>
+</div>
+<div class="section-header">
+<div class="section-title">Niveles de recompensa</div>
+</div>
+<div class="levels-list">
+<div class="level-card">
+<div class="level-icon">🎁</div>
+<div class="level-info">
+<div class="level-name">Nivel 1 — Amigo se registra</div>
+<div class="level-desc">Descarga la app y carga una póliza</div>
+</div>
+<div class="level-badge badge-done">+150 pts</div>
+</div>
+<div class="level-card active">
+<div class="level-icon">⭐</div>
+<div class="level-info">
+<div class="level-name">Nivel 2 — Amigo contrata</div>
+<div class="level-desc">Cierra una póliza nueva desde Brokia</div>
+</div>
+<div class="level-badge badge-active">+500 pts</div>
+</div>
+<div class="level-card">
+<div class="level-icon">🏆</div>
+<div class="level-info">
+<div class="level-name">Nivel 3 — 5 amigos activos</div>
+<div class="level-desc">5% descuento en tu próxima prima</div>
+</div>
+<div class="level-badge badge-lock">3/5</div>
+</div>
+</div>
+<div class="section-header">
+<div class="section-title">Mis referidos</div>
+<div style="font-size:12px;color:var(--gray-400)">3 activos</div>
+</div>
+<div class="ref-list">
+<div class="ref-item">
+<div class="ref-avatar">LP</div>
+<div class="ref-info">
+<div class="ref-name">Laura P.</div>
+<div class="ref-status-text">Contrató todo riesgo · hace 2 días</div>
+</div>
+<div class="ref-reward earned">+500 pts ✓</div>
+</div>
+<div class="ref-item">
+<div class="ref-avatar" style="background:#10B981">JM</div>
+<div class="ref-info">
+<div class="ref-name">Javier M.</div>
+<div class="ref-status-text">Cargó su póliza · hace 5 días</div>
+</div>
+<div class="ref-reward earned">+150 pts ✓</div>
+</div>
+<div class="ref-item">
+<div class="ref-avatar" style="background:#F59E0B">SC</div>
+<div class="ref-info">
+<div class="ref-name">Sofía C.</div>
+<div class="ref-status-text">Descargó · esperando póliza</div>
+</div>
+<div class="ref-reward pending">Pendiente</div>
+</div>
+</div>
+<div style="margin:0 20px 16px;background:var(--brand-light);border-radius:12px;padding:14px">
+<div style="font-size:13px;font-weight:600;color:var(--brand-dark);margin-bottom:4px">¿Cómo canjear tus puntos?</div>
+<div style="font-size:12px;color:var(--gray-600);line-height:1.6">340 puntos = $3.400 de descuento en tu próxima prima. Podés usarlos en la sección Cotizar al momento de contratar.</div>
+</div>
+<div style="padding:0 20px 8px">
+<button class="btn-brand" onclick="openRetiro()">Canjear mis puntos</button>
+</div>
+</div>
+</div>
+<div id="retiro-screen" class="subscreen">
+<div class="subscreen-header">
+<button class="back-btn" onclick="closeRetiro()">←</button>
+<div class="subscreen-title">Usar mis puntos</div>
+</div>
+<div class="scroll" style="padding-top:16px">
+<div style="margin:0 20px 20px;background:var(--brand-dark);border-radius:20px;padding:24px 20px;text-align:center">
+<div style="font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Tus puntos disponibles</div>
+<div style="font-size:44px;font-weight:600;color:#fff;line-height:1;margin-bottom:4px">340</div>
+<div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:16px">= $34.000 en valor de prima</div>
+<div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;text-align:left">
+<div style="font-size:12px;color:rgba(255,255,255,.9);line-height:1.5">Con tus puntos ya tenés cubierto el primer mes de tu seguro de ahorro. Sin desembolso adicional.</div>
+</div>
+</div>
+<div style="margin:0 20px 12px">
+<div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Opción recomendada</div>
+<div style="background:#fff;border:2px solid var(--brand);border-radius:20px;padding:20px;cursor:pointer" onclick="openModal('modal-retiro-detalle')">
+<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px">
+<div style="width:48px;height:48px;border-radius:14px;background:var(--brand-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏛️</div>
+<div style="flex:1">
+<div style="font-size:9px;font-weight:600;background:var(--brand);color:#fff;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:6px">NUEVO · Seguro de ahorro</div>
+<div style="font-size:16px;font-weight:500;color:var(--gray-900);font-family:var(--font-serif);margin-bottom:3px">Abrí tu póliza de retiro</div>
+<div style="font-size:12px;color:var(--gray-400);line-height:1.5">Tus puntos cubren el primer aporte. Tu ahorro empieza hoy, sin poner plata extra.</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+<div style="background:var(--gray-50);border-radius:10px;padding:10px;text-align:center">
+<div style="font-size:18px;font-weight:600;color:var(--brand)">$34k</div>
+<div style="font-size:10px;color:var(--gray-400);margin-top:2px">primer aporte</div>
+</div>
+<div style="background:var(--gray-50);border-radius:10px;padding:10px;text-align:center">
+<div style="font-size:18px;font-weight:600;color:var(--green)">$0</div>
+<div style="font-size:10px;color:var(--gray-400);margin-top:2px">de tu bolsillo</div>
+</div>
+<div style="background:var(--gray-50);border-radius:10px;padding:10px;text-align:center">
+<div style="font-size:18px;font-weight:600;color:var(--gray-800)">+vida</div>
+<div style="font-size:10px;color:var(--gray-400);margin-top:2px">cobertura incluida</div>
+</div>
+</div>
+<button class="btn-brand" onclick="event.stopPropagation();openModal('modal-retiro-detalle')">Ver cómo funciona →</button>
+</div>
+</div>
+<div style="margin:20px 20px 8px">
+<div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Otras formas de canjear</div>
+</div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+<div class="menu-item" onclick="showToast('Descuento aplicado en próxima prima')">
+<div class="menu-icon">🛡️</div>
+<div style="flex:1">
+<div class="menu-label">Descuento en tu prima</div>
+<div style="font-size:11px;color:var(--gray-400)">$34.000 off en tu renovación de auto</div>
+</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('Asistencia en ruta activada por 12 meses')">
+<div class="menu-icon">🚗</div>
+<div style="flex:1">
+<div class="menu-label">Asistencia en ruta</div>
+<div style="font-size:11px;color:var(--gray-400)">12 meses de cobertura incluidos</div>
+</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('Gift card enviada por WhatsApp')">
+<div class="menu-icon">🎁</div>
+<div style="flex:1">
+<div class="menu-label">Gift card digital</div>
+<div style="font-size:11px;color:var(--gray-400)">Supermercados · Combustible · Streaming</div>
+</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('Donación registrada a la ONG elegida')">
+<div class="menu-icon">💚</div>
+<div style="flex:1">
+<div class="menu-label">Donar a una causa</div>
+<div style="font-size:11px;color:var(--gray-400)">Elegí la ONG que querés apoyar</div>
+</div>
+<div class="menu-arrow">›</div>
+</div>
+</div>
+</div>
+</div>
+<div id="siniestro-screen" class="subscreen">
+<div class="subscreen-header">
+<button class="back-btn" id="sin-back-btn" onclick="sinBack()">←</button>
+<div class="subscreen-title" id="sin-screen-title">Denunciar siniestro</div>
+</div>
+<div style="display:flex;gap:4px;padding:0 20px 14px;flex-shrink:0" id="sin-steps">
+<div class="sin-step-pill active" id="sinp-1">Tipo</div>
+<div class="sin-step-pill" id="sinp-2">Datos</div>
+<div class="sin-step-pill" id="sinp-3">Documentos</div>
+<div class="sin-step-pill" id="sinp-4">Fotos</div>
+<div class="sin-step-pill" id="sinp-5">Envío</div>
+</div>
+<div id="sin-s1" class="scroll" style="padding-top:0">
+<div id="sin-poliza-banner" style="background:var(--brand-dark);border-radius:16px;margin:0 20px 16px;padding:13px 16px">
+<div style="font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Póliza detectada automáticamente</div>
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-size:20px">🚗</span>
+<div style="flex:1">
+<div style="font-size:13px;font-weight:500;color:#fff">VW Gol 2019</div>
+<div style="font-size:11px;color:rgba(255,255,255,.5)">Fed. Patronal · #FP-2847631 · Terceros Completo</div>
+</div>
+<div style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:9px;padding:4px 10px;border-radius:10px;cursor:pointer" onclick="showToast('Seleccioná otra póliza')">Cambiar</div>
+</div>
+</div>
+<div style="padding:0 20px;margin-bottom:8px">
+<div style="font-size:13px;font-weight:500;color:var(--gray-800);margin-bottom:2px">¿Qué tipo de siniestro sufriste?</div>
+<div style="font-size:12px;color:var(--gray-400)">La documentación necesaria depende del tipo.</div>
+</div>
+<div class="sin-type-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:20px">
+<div class="sin-type-btn sel" id="stype-choque" onclick="selectType('choque',this)">
+<div style="font-size:26px;margin-bottom:6px">💥</div>
+<div style="font-size:13px;font-weight:500">Choque</div>
+<div style="font-size:10px;color:var(--gray-400);margin-top:2px">Con o sin tercero</div>
+</div>
+<div class="sin-type-btn" id="stype-robo" onclick="selectType('robo',this)">
+<div style="font-size:26px;margin-bottom:6px">🔓</div>
+<div style="font-size:13px;font-weight:500">Robo</div>
+<div style="font-size:10px;color:var(--gray-400);margin-top:2px">Total o parcial</div>
+</div>
+<div class="sin-type-btn" id="stype-granizo" onclick="selectType('granizo',this)">
+<div style="font-size:26px;margin-bottom:6px">🌧️</div>
+<div style="font-size:13px;font-weight:500">Granizo</div>
+<div style="font-size:10px;color:var(--gray-400);margin-top:2px">Daños por clima</div>
+</div>
+<div class="sin-type-btn" id="stype-incendio" onclick="selectType('incendio',this)">
+<div style="font-size:26px;margin-bottom:6px">🔥</div>
+<div style="font-size:13px;font-weight:500">Incendio</div>
+<div style="font-size:10px;color:var(--gray-400);margin-top:2px">Parcial o total</div>
+</div>
+</div>
+<div id="sin-type-hint" style="margin:0 20px 16px;background:var(--brand-light);border-radius:12px;padding:12px 14px">
+<div style="font-size:12px;font-weight:500;color:var(--brand-dark);margin-bottom:3px">💥 Choque seleccionado</div>
+<div style="font-size:11px;color:var(--gray-600);line-height:1.5">Necesitarás: datos del auto, licencia, cédula verde, acta policial si hay tercero y fotos del daño.</div>
+</div>
+<div style="padding:0 20px 8px">
+<button class="btn-brand" onclick="sinNext(1)">Continuar →</button>
+</div>
+</div>
+<div id="sin-s2" class="scroll" style="padding-top:0;display:none">
+<div style="padding:0 20px;margin-bottom:14px">
+<div style="font-size:13px;font-weight:500;color:var(--gray-800);margin-bottom:2px">Datos del siniestro</div>
+<div style="font-size:12px;color:var(--gray-400)">Los datos de la póliza se cargaron automáticamente.</div>
+</div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+<div class="bd-item"><div class="bd-ico">👤</div><div class="bd-info"><div class="bd-name">Asegurado</div><div class="bd-reason">Martín Rodríguez · DNI 28.XXX.XXX</div></div><div style="font-size:9px;font-weight:600;color:var(--green)">Auto ✓</div></div>
+<div class="bd-item"><div class="bd-ico">📋</div><div class="bd-info"><div class="bd-name">Póliza Nº</div><div class="bd-reason">FP-2847631 · Terceros Completo</div></div><div style="font-size:9px;font-weight:600;color:var(--green)">Auto ✓</div></div>
+<div class="bd-item"><div class="bd-ico">🏢</div><div class="bd-info"><div class="bd-name">Compañía</div><div class="bd-reason">Federación Patronal</div></div><div style="font-size:9px;font-weight:600;color:var(--green)">Auto ✓</div></div>
+<div id="sin-datos-bien" class="bd-item"><div class="bd-ico">🚗</div><div class="bd-info"><div class="bd-name">Vehículo</div><div class="bd-reason">VW Gol 2019 · Patente AA 123 BB</div></div><div style="font-size:9px;font-weight:600;color:var(--green)">Auto ✓</div></div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer" onclick="showToast('Selector de fecha')">
+<div style="font-size:10px;font-weight:600;color:var(--gray-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Fecha y hora del siniestro *</div>
+<div style="font-size:13px;color:var(--gray-400)">Seleccioná fecha y hora →</div>
+</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 14px">
+<div style="font-size:10px;font-weight:600;color:var(--gray-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Lugar del siniestro *</div>
+<div style="font-size:13px;color:var(--gray-400)">Calle, número, ciudad...</div>
+</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 14px">
+<div style="font-size:10px;font-weight:600;color:var(--gray-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Descripción de lo ocurrido *</div>
+<div style="font-size:13px;color:var(--gray-400);min-height:52px">Relatá brevemente qué pasó...</div>
+</div>
+<div id="sin-tercero-section">
+<div style="font-size:12px;font-weight:500;color:var(--gray-700);margin:6px 0 8px">¿Hubo vehículo de tercero involucrado?</div>
+<div style="display:flex;gap:8px;margin-bottom:8px">
+<div id="sin-tercero-si" style="flex:1;background:var(--brand-light);border:1.5px solid var(--brand);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:500;color:var(--brand-dark)" onclick="sinTerceroSel(true)">Sí</div>
+<div id="sin-tercero-no" style="flex:1;background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:500;color:var(--gray-600)" onclick="sinTerceroSel(false)">No / me fui sin datos</div>
+</div>
+<div id="sin-tercero-data" style="display:flex;flex-direction:column;gap:8px">
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 14px">
+<div style="font-size:10px;font-weight:600;color:var(--gray-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Patente del tercero</div>
+<div style="font-size:13px;color:var(--gray-400)">Ej: AB 123 CD</div>
+</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 14px">
+<div style="font-size:10px;font-weight:600;color:var(--gray-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Nombre del conductor tercero</div>
+<div style="font-size:13px;color:var(--gray-400)">Si lo tenés...</div>
+</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 14px">
+<div style="font-size:10px;font-weight:600;color:var(--gray-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Compañía de seguro del tercero</div>
+<div style="font-size:13px;color:var(--gray-400)">Si la tenés...</div>
+</div>
+</div>
+</div>
+</div>
+<div style="padding:0 20px 8px;display:flex;gap:10px">
+<button class="btn-outline" style="width:auto;padding:14px 20px" onclick="sinNext(0)">← Atrás</button>
+<button class="btn-brand" onclick="sinNext(2)">Continuar →</button>
+</div>
+</div>
+<div id="sin-s3" class="scroll" style="padding-top:0;display:none">
+<div style="padding:0 20px;margin-bottom:14px">
+<div style="font-size:13px;font-weight:500;color:var(--gray-800);margin-bottom:2px">Documentación requerida</div>
+<div style="font-size:12px;color:var(--gray-400)">Tildá lo que ya tenés preparado.</div>
+</div>
+<div id="sin-doc-list" style="padding:0 20px;display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
+<div id="sin-doc-alert" style="margin:0 20px 16px;border-radius:12px;padding:12px 14px"></div>
+<div style="padding:0 20px 8px;display:flex;gap:10px">
+<button class="btn-outline" style="width:auto;padding:14px 20px" onclick="sinNext(1)">← Atrás</button>
+<button class="btn-brand" onclick="sinNext(3)">Continuar →</button>
+</div>
+</div>
+<div id="sin-s4" class="scroll" style="padding-top:0;display:none">
+<div style="padding:0 20px;margin-bottom:14px">
+<div style="font-size:13px;font-weight:500;color:var(--gray-800);margin-bottom:2px">Fotos del siniestro</div>
+<div style="font-size:12px;color:var(--gray-400)">Cuantas más fotos, mejor para el expediente.</div>
+</div>
+<div id="sin-foto-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 20px;margin-bottom:16px"></div>
+<div style="margin:0 20px 16px;background:var(--gray-50);border:1px dashed var(--gray-300);border-radius:12px;padding:14px;text-align:center;cursor:pointer" onclick="showToast('📸 Abriendo cámara para foto adicional...')">
+<div style="font-size:22px;margin-bottom:4px">➕</div>
+<div style="font-size:12px;color:var(--gray-400)">Agregar foto adicional</div>
+</div>
+<div style="margin:0 20px 16px;background:var(--amber-light);border:1px solid #FDE68A;border-radius:12px;padding:12px 14px">
+<div style="font-size:12px;font-weight:500;color:#92400E;margin-bottom:3px">Tip importante</div>
+<div id="sin-foto-tip" style="font-size:11px;color:var(--gray-600);line-height:1.5"></div>
+</div>
+<div style="padding:0 20px 8px;display:flex;gap:10px">
+<button class="btn-outline" style="width:auto;padding:14px 20px" onclick="sinNext(2)">← Atrás</button>
+<button class="btn-brand" onclick="sinNext(4)">Continuar →</button>
+</div>
+</div>
+<div id="sin-s5" class="scroll" style="padding-top:0;display:none">
+<div style="padding:0 20px;margin-bottom:16px">
+<div style="font-size:13px;font-weight:500;color:var(--gray-800);margin-bottom:2px">Revisión final</div>
+<div style="font-size:12px;color:var(--gray-400)">Confirmá antes de enviar al productor.</div>
+</div>
+<div style="background:var(--brand);border-radius:16px;margin:0 20px 16px;padding:18px">
+<div style="font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Resumen de la denuncia</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="font-size:12px;color:rgba(255,255,255,.6)">Tipo</div>
+<div id="sin-resumen-tipo" style="font-size:12px;font-weight:500;color:#fff">💥 Choque</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="font-size:12px;color:rgba(255,255,255,.6)">Póliza</div>
+<div style="font-size:12px;font-weight:500;color:#fff">FP-2847631</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="font-size:12px;color:rgba(255,255,255,.6)">Asegurado</div>
+<div style="font-size:12px;font-weight:500;color:#fff">Martín Rodríguez</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="font-size:12px;color:rgba(255,255,255,.6)">Compañía</div>
+<div style="font-size:12px;font-weight:500;color:#fff">Federación Patronal</div>
+</div>
+<div id="sin-resumen-docs" style="display:flex;justify-content:space-between;align-items:center">
+<div style="font-size:12px;color:rgba(255,255,255,.6)">Documentos</div>
+<div style="font-size:12px;font-weight:500;color:#6EE7B7">Completos ✓</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="font-size:12px;color:rgba(255,255,255,.6)">Fotos</div>
+<div id="sin-resumen-fotos" style="font-size:12px;font-weight:500;color:#fff">3 adjuntas</div>
+</div>
+</div>
+</div>
+<div style="margin:0 20px 16px;background:var(--brand-light);border-radius:12px;padding:14px">
+<div style="font-size:12px;font-weight:500;color:var(--brand-dark);margin-bottom:6px">¿Qué pasa después?</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:flex-start;gap:8px"><div style="width:18px;height:18px;border-radius:50%;background:var(--brand);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div><div style="font-size:11px;color:var(--gray-600);line-height:1.4">Tu productor recibe la denuncia completa en menos de 2 minutos</div></div>
+<div style="display:flex;align-items:flex-start;gap:8px"><div style="width:18px;height:18px;border-radius:50%;background:var(--brand);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div><div style="font-size:11px;color:var(--gray-600);line-height:1.4">El productor te contacta y coordina la denuncia ante la aseguradora</div></div>
+<div style="display:flex;align-items:flex-start;gap:8px"><div style="width:18px;height:18px;border-radius:50%;background:var(--brand);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">3</div><div style="font-size:11px;color:var(--gray-600);line-height:1.4">Recibís el número de expediente por WhatsApp para hacer el seguimiento</div></div>
+</div>
+</div>
+<div style="padding:0 20px 8px;display:flex;gap:10px">
+<button class="btn-outline" style="width:auto;padding:14px 20px" onclick="sinNext(3)">← Atrás</button>
+<button class="btn-brand" onclick="sinEnviar()">Enviar denuncia →</button>
+</div>
+</div>
+</div>
+<div id="dashboard-screen" class="subscreen">
+<div class="subscreen-header">
+<button class="back-btn" onclick="closeDashboard()">←</button>
+<div class="subscreen-title">Dashboard productor</div>
+</div>
+<div class="scroll" style="padding-top:16px">
+<div style="padding:0 20px 16px">
+<div style="font-size:12px;color:var(--gray-400)">Buenos días,</div>
+<div style="font-size:20px;font-weight:500;color:var(--gray-900);font-family:var(--font-serif)">Martín Rodríguez</div>
+<div style="font-size:11px;color:var(--gray-400);margin-top:2px">Productor matriculado · SSN #28.456</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:20px">
+<div style="background:var(--brand);border-radius:14px;padding:14px">
+<div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:6px">Pólizas activas</div>
+<div style="font-size:28px;font-weight:600;color:#fff;line-height:1">23</div>
+<div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:3px">+3 este mes</div>
+</div>
+<div style="background:var(--amber-light);border:1px solid #FDE68A;border-radius:14px;padding:14px">
+<div style="font-size:11px;color:#92400E;margin-bottom:6px">Vencen en 45 días</div>
+<div style="font-size:28px;font-weight:600;color:#92400E;line-height:1">4</div>
+<div style="font-size:10px;color:#B45309;margin-top:3px">Acción requerida</div>
+</div>
+<div style="background:var(--red-light);border:1px solid #FECACA;border-radius:14px;padding:14px">
+<div style="font-size:11px;color:#991B1B;margin-bottom:6px">Brechas detectadas</div>
+<div style="font-size:28px;font-weight:600;color:#991B1B;line-height:1">7</div>
+<div style="font-size:10px;color:#B91C1C;margin-top:3px">En pólizas activas</div>
+</div>
+<div style="background:var(--green-light);border:1px solid #A7F3D0;border-radius:14px;padding:14px">
+<div style="font-size:11px;color:#065F46;margin-bottom:6px">Conversiones</div>
+<div style="font-size:28px;font-weight:600;color:#065F46;line-height:1">2</div>
+<div style="font-size:10px;color:#047857;margin-top:3px">Este mes</div>
+</div>
+</div>
+<div class="section-header">
+<div class="section-title">⏰ Vencen pronto</div>
+<div style="font-size:11px;color:var(--gray-400)">Prioridad de contacto</div>
+</div>
+<div class="poliza-list" style="padding:0 20px">
+<div class="poliza-card" onclick="showToast('Abriendo WhatsApp con Martín R...')">
+<div class="pol-icon" style="background:#EEF2FF">🚗</div>
+<div class="pol-info"><div class="pol-name">Martín R. · VW Gol</div><div class="pol-co">Fed. Patronal · Terceros</div></div>
+<div class="pol-right"><div class="pol-badge badge-red">12 días</div><div class="pol-due">💬 Contactar</div></div>
+</div>
+<div class="poliza-card" onclick="showToast('Abriendo WhatsApp con Laura P...')">
+<div class="pol-icon" style="background:#ECFDF5">🏠</div>
+<div class="pol-info"><div class="pol-name">Laura P. · Hogar</div><div class="pol-co">Sancor · Incendio+robo</div></div>
+<div class="pol-right"><div class="pol-badge badge-amber">28 días</div><div class="pol-due">💬 Contactar</div></div>
+</div>
+<div class="poliza-card" onclick="showToast('Abriendo WhatsApp con Javier M...')">
+<div class="pol-icon" style="background:#EEF2FF">🚗</div>
+<div class="pol-info"><div class="pol-name">Javier M. · Fiat Cronos</div><div class="pol-co">La Caja · Todo riesgo</div></div>
+<div class="pol-right"><div class="pol-badge badge-amber">34 días</div><div class="pol-due">💬 Contactar</div></div>
+</div>
+</div>
+<div class="section-header" style="margin-top:4px">
+<div class="section-title">📂 Pólizas de terceros</div>
+<div style="font-size:11px;color:var(--brand)">Oportunidades</div>
+</div>
+<div class="poliza-list" style="padding:0 20px">
+<div class="poliza-card" onclick="showToast('Ver análisis completo de Sofía C.')">
+<div class="pol-icon" style="background:#FFFBEB">🚗</div>
+<div class="pol-info"><div class="pol-name">Sofía C. · Honda City</div><div class="pol-co">Galicia Seguros · otro productor</div></div>
+<div class="pol-right"><div class="pol-badge" style="background:#F3E8FF;color:#7C3AED">45 días</div><div class="pol-due">Cotizar →</div></div>
+</div>
+<div class="poliza-card" onclick="showToast('Brecha detectada: sin cobertura de contenido')">
+<div class="pol-icon" style="background:#ECFDF5">🏠</div>
+<div class="pol-info"><div class="pol-name">Carlos B. · Casa propia</div><div class="pol-co">Zurich · Brecha detectada</div></div>
+<div class="pol-right"><div class="pol-badge" style="background:#F3E8FF;color:#7C3AED">67 días</div><div class="pol-due">Brecha ⚠</div></div>
+</div>
+<div class="poliza-card" onclick="showToast('Suma asegurada insuficiente para familia a cargo')">
+<div class="pol-icon" style="background:#FFF1F2">❤️</div>
+<div class="pol-info"><div class="pol-name">Ana L. · Vida individual</div><div class="pol-co">Prudential · Suma baja</div></div>
+<div class="pol-right"><div class="pol-badge" style="background:#F3E8FF;color:#7C3AED">89 días</div><div class="pol-due">Infraseg. ⚠</div></div>
+</div>
+</div>
+<div class="section-header" style="margin-top:4px">
+<div class="section-title">Actividad reciente</div>
+</div>
+<div class="alerts-list" style="margin-bottom:8px">
+<div class="alert-item" onclick="showToast('Sofía cargó su póliza de Honda City')">
+<div class="alert-dot" style="background:#10B981"></div>
+<div class="alert-text">Sofía C. cargó su póliza de auto</div>
+<div class="alert-time">hace 1h</div>
+</div>
+<div class="alert-item" onclick="showToast('Brecha: Carlos no tiene cobertura de contenido')">
+<div class="alert-dot" style="background:#EF4444"></div>
+<div class="alert-text">Brecha detectada en póliza de Carlos B.</div>
+<div class="alert-time">hace 3h</div>
+</div>
+<div class="alert-item" onclick="openSiniestro()">
+<div class="alert-dot" style="background:#4338CA"></div>
+<div class="alert-text">Martín R. inició denuncia de siniestro</div>
+<div class="alert-time">ayer</div>
+</div>
+<div class="alert-item" onclick="showToast('Comisión acreditada: Laura P. contrató todo riesgo')">
+<div class="alert-dot" style="background:#F59E0B"></div>
+<div class="alert-text">Laura P. contrató todo riesgo · comisión ✓</div>
+<div class="alert-time">hace 2d</div>
+</div>
+</div>
+<div style="padding:8px 20px 8px">
+<button class="btn-brand" onclick="showToast('Abriendo WhatsApp con los 4 clientes prioritarios...')">Contactar clientes prioritarios</button>
+</div>
+</div>
+</div>
+<div id="finanzas" class="screen" style="position:absolute;inset:0;background:var(--gray-50)">
+<div class="tab-header" style="margin-bottom:14px">
+<button class="back-arrow-btn" onclick="navBack('home')">←</button>
+<div class="tab-header-text">
+<div class="tab-header-greeting">Resumen financiero</div>
+<div class="tab-header-title">Mis gastos</div>
+</div>
+<div class="tab-header-action" onclick="showToast('📊 Exportando resumen PDF...')">📊</div>
+</div>
+<div class="scroll">
+<div class="fin-hero">
+<div class="fin-hero-label">Gasto mensual total en seguros</div>
+<div class="fin-hero-amount" id="fin-total-mes">$95.500</div>
+<div class="fin-hero-period">por mes · 4 pólizas activas</div>
+<div class="fin-hero-stats">
+<div class="fin-stat">
+<div class="fin-stat-val" id="fin-total-anual">$1.146.000</div>
+<div class="fin-stat-label">gasto anual</div>
+</div>
+<div class="fin-stat">
+<div class="fin-stat-val" id="fin-porc-ingreso">4.8%</div>
+<div class="fin-stat-label">del ingreso estimado</div>
+</div>
+<div class="fin-stat">
+<div class="fin-stat-val" style="color:#6EE7B7" id="fin-ahorro-dis">$14.000</div>
+<div class="fin-stat-label">ahorro posible/mes</div>
+</div>
+</div>
+</div>
+<div class="fin-toggle-row">
+<button class="fin-toggle-btn active" id="ftog-actual" onclick="finToggle('actual')">Situación actual</button>
+<button class="fin-toggle-btn" id="ftog-optimizado" onclick="finToggle('optimizado')">Optimizado</button>
+<button class="fin-toggle-btn" id="ftog-ahorro" onclick="finToggle('ahorro')">Mi ahorro</button>
+</div>
+<div id="fin-vista-actual">
+<div class="fin-donut-wrap">
+<svg class="fin-donut-svg" viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg">
+<circle cx="42" cy="42" r="34" fill="none" stroke="#E5E7EB" stroke-width="10"/>
+<circle cx="42" cy="42" r="34" fill="none" stroke="#4338CA" stroke-width="10"
+stroke-dasharray="213.6 0" stroke-dashoffset="0"
+transform="rotate(-90 42 42)" stroke-linecap="butt"
+style="stroke-dasharray: calc(213.6 * 0.41) calc(213.6 * 0.59)"/>
+<circle cx="42" cy="42" r="34" fill="none" stroke="#818CF8" stroke-width="10"
+stroke-dasharray="213.6" stroke-dashoffset="-87.6"
+transform="rotate(-90 42 42)"
+style="stroke-dasharray: calc(213.6 * 0.13) calc(213.6 * 0.87); stroke-dashoffset: calc(-213.6 * 0.41)"/>
+<circle cx="42" cy="42" r="34" fill="none" stroke="#10B981" stroke-width="10"
+transform="rotate(-90 42 42)"
+style="stroke-dasharray: calc(213.6 * 0.12) calc(213.6 * 0.88); stroke-dashoffset: calc(-213.6 * 0.54)"/>
+<circle cx="42" cy="42" r="34" fill="none" stroke="#C7D2FE" stroke-width="10"
+transform="rotate(-90 42 42)"
+style="stroke-dasharray: calc(213.6 * 0.43) calc(213.6 * 0.57); stroke-dashoffset: calc(-213.6 * 0.25)"/>
+</svg>
+<div class="fin-donut-legend">
+<div class="fin-legend-item">
+<div class="fin-legend-dot" style="background:#4338CA"></div>
+<div class="fin-legend-label">Auto · VW Gol</div>
+<div class="fin-legend-pct">37%</div>
+</div>
+<div class="fin-legend-item">
+<div class="fin-legend-dot" style="background:#C7D2FE"></div>
+<div class="fin-legend-label">Auto · Honda City</div>
+<div class="fin-legend-pct">43%</div>
+</div>
+<div class="fin-legend-item">
+<div class="fin-legend-dot" style="background:#818CF8"></div>
+<div class="fin-legend-label">Hogar</div>
+<div class="fin-legend-pct">12%</div>
+</div>
+<div class="fin-legend-item">
+<div class="fin-legend-dot" style="background:#10B981"></div>
+<div class="fin-legend-label">Vida</div>
+<div class="fin-legend-pct">8%</div>
+</div>
+</div>
+</div>
+<div class="section-header">
+<div class="section-title">Detalle por póliza</div>
+</div>
+<div class="fin-pol-list">
+<div class="fin-pol-card">
+<div class="fin-pol-top">
+<div class="fin-pol-icon" style="background:#EEF2FF">🚗</div>
+<div class="fin-pol-name">Honda City 2022</div>
+<div class="fin-pol-amount">$44.200</div>
+</div>
+<div class="fin-pol-bar-wrap">
+<div class="fin-pol-bar" style="width:43%;background:#C7D2FE"></div>
+</div>
+<div class="fin-pol-meta">
+<div class="fin-pol-co">Galicia Seguros · Terceros Completo</div>
+<div class="fin-pol-pct">43% del total</div>
+</div>
+</div>
+<div class="fin-pol-card">
+<div class="fin-pol-top">
+<div class="fin-pol-icon" style="background:#EEF2FF">🚗</div>
+<div class="fin-pol-name">VW Gol 2019</div>
+<div class="fin-pol-amount">$38.500</div>
+</div>
+<div class="fin-pol-bar-wrap">
+<div class="fin-pol-bar" style="width:37%;background:#4338CA"></div>
+</div>
+<div class="fin-pol-meta">
+<div class="fin-pol-co">Federación Patronal · Terceros Completo</div>
+<div class="fin-pol-pct">37% del total</div>
+</div>
+</div>
+<div class="fin-pol-card">
+<div class="fin-pol-top">
+<div class="fin-pol-icon" style="background:#ECFDF5">🏠</div>
+<div class="fin-pol-name">Depto. Palermo</div>
+<div class="fin-pol-amount">$12.800</div>
+</div>
+<div class="fin-pol-bar-wrap">
+<div class="fin-pol-bar" style="width:12%;background:#818CF8"></div>
+</div>
+<div class="fin-pol-meta">
+<div class="fin-pol-co">Sancor Seguros · Incendio + contenido</div>
+<div class="fin-pol-pct">12% del total</div>
+</div>
+</div>
+<div class="fin-pol-card">
+<div class="fin-pol-top">
+<div class="fin-pol-icon" style="background:#FFFBEB">❤️</div>
+<div class="fin-pol-name">Vida individual</div>
+<div class="fin-pol-amount">$8.000</div>
+</div>
+<div class="fin-pol-bar-wrap">
+<div class="fin-pol-bar" style="width:8%;background:#10B981"></div>
+</div>
+<div class="fin-pol-meta">
+<div class="fin-pol-co">La Meridional · Capital $5M</div>
+<div class="fin-pol-pct">8% del total</div>
+</div>
+</div>
+</div>
+<div class="anual-card">
+<div class="anual-title">Proyección anual</div>
+<div class="anual-row">
+<div class="anual-row-label">Gasto actual 12 meses</div>
+<div class="anual-row-val">$1.246.800</div>
+</div>
+<div class="anual-row">
+<div class="anual-row-label">Si optimizás (mejor cotización)</div>
+<div class="anual-row-val green">$1.078.800</div>
+</div>
+<div class="anual-row">
+<div class="anual-row-label">Diferencia anual estimada</div>
+<div class="anual-row-val amber">−$168.000</div>
+</div>
+<div class="anual-row">
+<div class="anual-row-label">Con cobertura mejorada ✓</div>
+<div class="anual-row-val" style="color:rgba(255,255,255,.7);font-size:11px">Todo riesgo incluido</div>
+</div>
+</div>
+</div>
+<div id="fin-vista-optimizado" style="display:none">
+<div style="margin:0 20px 16px;background:var(--brand-light);border:1.5px solid var(--brand);border-radius:14px;padding:14px 16px">
+<div style="font-size:12px;font-weight:600;color:var(--brand-dark);margin-bottom:4px">¿Qué es la vista optimizada?</div>
+<div style="font-size:11px;color:var(--gray-600);line-height:1.6">Muestra cómo quedaría tu gasto mensual si aceptás las mejores cotizaciones disponibles para cada póliza, manteniendo o mejorando cobertura.</div>
+</div>
+<div class="fin-pol-list">
+<div class="fin-pol-card" style="border-color:#A7F3D0">
+<div class="fin-pol-top">
+<div class="fin-pol-icon" style="background:#ECFDF5">🚗</div>
+<div class="fin-pol-name">Honda City 2022</div>
+<div style="text-align:right">
+<div class="fin-pol-amount" style="color:var(--green)">$38.400</div>
+<div style="font-size:10px;color:var(--gray-400);text-decoration:line-through">$44.200</div>
+</div>
+</div>
+<div class="fin-pol-bar-wrap">
+<div class="fin-pol-bar" style="width:39%;background:#10B981"></div>
+</div>
+<div class="fin-pol-meta">
+<div class="fin-pol-co">Federación Patronal · Todo Riesgo ⬆</div>
+<div style="font-size:10px;color:var(--green);font-weight:600">−$5.800/mes</div>
+</div>
+</div>
+<div class="fin-pol-card" style="border-color:#A7F3D0">
+<div class="fin-pol-top">
+<div class="fin-pol-icon" style="background:#EEF2FF">🚗</div>
+<div class="fin-pol-name">VW Gol 2019</div>
+<div style="text-align:right">
+<div class="fin-pol-amount" style="color:var(--green)">$33.600</div>
+<div style="font-size:10px;color:var(--gray-400);text-decoration:line-through">$38.500</div>
+</div>
+</div>
+<div class="fin-pol-bar-wrap">
+<div class="fin-pol-bar" style="width:34%;background:#10B981"></div>
+</div>
+<div class="fin-pol-meta">
+<div class="fin-pol-co">Sancor Seguros · Terceros Completo</div>
+<div style="font-size:10px;color:var(--green);font-weight:600">−$4.900/mes</div>
+</div>
+</div>
+<div class="fin-pol-card">
+<div class="fin-pol-top">
+<div class="fin-pol-icon" style="background:#ECFDF5">🏠</div>
+<div class="fin-pol-name">Depto. Palermo</div>
+<div style="text-align:right">
+<div class="fin-pol-amount">$12.800</div>
+<div style="font-size:10px;color:var(--amber);font-weight:500">suma desactualizada</div>
+</div>
+</div>
+<div class="fin-pol-bar-wrap">
+<div class="fin-pol-bar" style="width:13%;background:#F59E0B"></div>
+</div>
+<div class="fin-pol-meta">
+<div class="fin-pol-co">Sancor Seguros · Actualizar suma</div>
+<div style="font-size:10px;color:var(--amber);font-weight:600">revisar</div>
+</div>
+</div>
+<div class="fin-pol-card" style="border-color:#A7F3D0">
+<div class="fin-pol-top">
+<div class="fin-pol-icon" style="background:#FFFBEB">❤️</div>
+<div class="fin-pol-name">Vida individual</div>
+<div style="text-align:right">
+<div class="fin-pol-amount">$8.000</div>
+<div style="font-size:10px;color:var(--gray-400)">sin cambios</div>
+</div>
+</div>
+<div class="fin-pol-bar-wrap">
+<div class="fin-pol-bar" style="width:8%;background:#10B981"></div>
+</div>
+<div class="fin-pol-meta">
+<div class="fin-pol-co">La Meridional</div>
+<div style="font-size:10px;color:var(--gray-400)">ya optimizado</div>
+</div>
+</div>
+</div>
+<div style="margin:0 20px 20px;background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:14px 16px">
+<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+<div style="font-size:13px;font-weight:500;color:var(--gray-700)">Total optimizado</div>
+<div style="font-size:16px;font-weight:700;color:var(--green)">$92.800/mes</div>
+</div>
+<div style="display:flex;justify-content:space-between">
+<div style="font-size:12px;color:var(--gray-400)">vs. situación actual</div>
+<div style="font-size:13px;font-weight:600;color:var(--green)">−$10.700/mes</div>
+</div>
+</div>
+<div style="padding:0 20px 8px">
+<button class="btn-brand" onclick="showTab('quotes')">Ver cotizaciones disponibles →</button>
+</div>
+</div>
+<div id="fin-vista-ahorro" style="display:none">
+<div class="ahorro-hero" onclick="showTab('quotes')">
+<div class="ahorro-hero-top">
+<div class="ahorro-badge">💰 Ahorro detectado</div>
+<div class="ahorro-arrow">→</div>
+</div>
+<div class="ahorro-amount">$10.700</div>
+<div class="ahorro-period">por mes · $128.400 al año</div>
+<div class="ahorro-desc">Brokia identificó mejores cotizaciones para 2 de tus pólizas. Misma o mejor cobertura, menor precio.</div>
+</div>
+<div class="comparador-wrap">
+<div class="comparador-title">Comparativa mensual por póliza</div>
+<div class="comparador-row">
+<div class="comp-label">Honda City</div>
+<div class="comp-bar-track">
+<div class="comp-bar-fill" style="width:88%;background:var(--green)">
+<div class="comp-bar-val">$38.400</div>
+</div>
+</div>
+<div class="comp-delta" style="color:var(--green)">−$5.800</div>
+</div>
+<div style="font-size:10px;color:var(--gray-400);margin-left:56px;margin-bottom:10px">antes: $44.200 · Federación Patronal Todo Riesgo</div>
+<div class="comparador-row">
+<div class="comp-label">VW Gol</div>
+<div class="comp-bar-track">
+<div class="comp-bar-fill" style="width:87%;background:var(--brand)">
+<div class="comp-bar-val">$33.600</div>
+</div>
+</div>
+<div class="comp-delta" style="color:var(--green)">−$4.900</div>
+</div>
+<div style="font-size:10px;color:var(--gray-400);margin-left:56px;margin-bottom:10px">antes: $38.500 · Sancor Seguros</div>
+<div class="comparador-row">
+<div class="comp-label">Hogar</div>
+<div class="comp-bar-track">
+<div class="comp-bar-fill" style="width:100%;background:var(--gray-400)">
+<div class="comp-bar-val">$12.800</div>
+</div>
+</div>
+<div class="comp-delta" style="color:var(--gray-400)">−</div>
+</div>
+<div style="font-size:10px;color:var(--amber);margin-left:56px;margin-bottom:10px">suma desactualizada por inflación</div>
+<div class="comparador-row">
+<div class="comp-label">Vida</div>
+<div class="comp-bar-track">
+<div class="comp-bar-fill" style="width:100%;background:var(--gray-400)">
+<div class="comp-bar-val">$8.000</div>
+</div>
+</div>
+<div class="comp-delta" style="color:var(--gray-400)">−</div>
+</div>
+<div style="font-size:10px;color:var(--gray-400);margin-left:56px;margin-bottom:4px">sin oportunidad de mejora actualmente</div>
+</div>
+<div class="section-header">
+<div class="section-title">Oportunidades</div>
+</div>
+<div class="ahorro-cards">
+<div class="ahorro-card" onclick="closeModal('modal-auto');showTab('quotes')">
+<div class="ahorro-card-icon">🚗</div>
+<div class="ahorro-card-info">
+<div class="ahorro-card-title">Honda City — cambiar compañía</div>
+<div class="ahorro-card-desc">Federación Patronal · Todo Riesgo incluido</div>
+</div>
+<div class="ahorro-card-right">
+<div class="ahorro-card-save">−$5.800</div>
+<div class="ahorro-card-period">por mes</div>
+</div>
+</div>
+<div class="ahorro-card" onclick="showTab('quotes')">
+<div class="ahorro-card-icon">🚗</div>
+<div class="ahorro-card-info">
+<div class="ahorro-card-title">VW Gol — mejor tarifa</div>
+<div class="ahorro-card-desc">Sancor Seguros · misma cobertura</div>
+</div>
+<div class="ahorro-card-right">
+<div class="ahorro-card-save">−$4.900</div>
+<div class="ahorro-card-period">por mes</div>
+</div>
+</div>
+<div class="ahorro-card" style="border-color:#FDE68A;background:var(--amber-light)" onclick="openModal('modal-hogar')">
+<div class="ahorro-card-icon">🏠</div>
+<div class="ahorro-card-info">
+<div class="ahorro-card-title">Hogar — actualizar suma asegurada</div>
+<div class="ahorro-card-desc">Perdió 28% de valor real por inflación</div>
+</div>
+<div class="ahorro-card-right">
+<div class="ahorro-card-save" style="color:var(--amber)">revisar</div>
+<div class="ahorro-card-period">urgente</div>
+</div>
+</div>
+</div>
+<div style="padding:0 20px 8px">
+<button class="btn-brand" onclick="showTab('quotes')">Cotizar mejoras ahora →</button>
+</div>
+<div style="padding:8px 20px 0">
+<button class="btn-outline" onclick="openModal('modal-asesor')">Hablar con el productor</button>
+</div>
+</div>
+</div>
+</div>
+<div class="bottom-nav" id="bottom-nav">
+<button class="nav-btn active" id="nav-home" onclick="showTab('home')">
+<div class="nav-icon">🏠</div>
+<div class="nav-label">Inicio</div>
+<div class="nav-dot"></div>
+</button>
+<button class="nav-btn" id="nav-analysis" onclick="showTab('analysis')">
+<div class="nav-icon">🔍</div>
+<div class="nav-label">Análisis</div>
+<div class="nav-dot"></div>
+</button>
+<button class="nav-btn" id="nav-quotes" onclick="showTab('quotes')">
+<div class="nav-icon">💬</div>
+<div class="nav-label">Cotizar</div>
+<div class="nav-dot"></div>
+</button>
+<button class="nav-btn" id="nav-finanzas" onclick="showTab('finanzas')">
+<div class="nav-icon">💰</div>
+<div class="nav-label">Gastos</div>
+<div class="nav-dot"></div>
+</button>
+<button class="nav-btn" id="nav-profile" onclick="showTab('profile')">
+<div class="nav-icon">👤</div>
+<div class="nav-label">Perfil</div>
+<div class="nav-dot"></div>
+</button>
+</div>
+</div>
+<div class="modal-overlay" id="modal-auto" onclick="closeModal('modal-auto')">
+<div class="modal-sheet" onclick="event.stopPropagation()">
+<div class="modal-handle"></div>
+<div class="modal-title">VW Gol 2019</div>
+<div class="modal-sub">Federación Patronal · Póliza #FP-2847631 · Vigente hasta 12/06/2026</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+<div class="bd-item"><div class="bd-ico">📋</div><div class="bd-info"><div class="bd-name">Plan</div><div class="bd-reason">Terceros Completo</div></div></div>
+<div class="bd-item"><div class="bd-ico">💰</div><div class="bd-info"><div class="bd-name">Prima mensual</div><div class="bd-reason">$38.500 / mes</div></div></div>
+<div class="bd-item"><div class="bd-ico">🛡</div><div class="bd-info"><div class="bd-name">Suma asegurada</div><div class="bd-reason">$9.200.000</div></div></div>
+<div class="bd-item"><div class="bd-ico">⚠️</div><div class="bd-info"><div class="bd-name">Franquicia RC</div><div class="bd-reason">Sin franquicia</div></div></div>
+</div>
+<button class="btn-brand" onclick="closeModal('modal-auto');showTab('analysis')">Ver análisis IA completo</button>
+<div style="margin-top:10px">
+<button class="btn-sin" onclick="closeModal('modal-auto');openSiniestroDesdePoliza({nombre:'VW Gol 2019',compania:'Federación Patronal',polizaNum:'FP-2847631',plan:'Terceros Completo',icon:'🚗',ramo:'auto',tipos:['choque','robo','granizo','incendio']})">🚨 Denunciar siniestro</button>
+</div>
+</div>
+</div>
+<div class="modal-overlay" id="modal-hogar" onclick="closeModal('modal-hogar')">
+<div class="modal-sheet" onclick="event.stopPropagation()">
+<div class="modal-handle"></div>
+<div class="modal-title">Depto. Palermo</div>
+<div class="modal-sub">Sancor Seguros · Póliza #SC-1193847 · Vigente hasta 03/09/2026</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+<div class="bd-item"><div class="bd-ico">📋</div><div class="bd-info"><div class="bd-name">Coberturas</div><div class="bd-reason">Incendio, robo, inundación</div></div></div>
+<div class="bd-item"><div class="bd-ico">💰</div><div class="bd-info"><div class="bd-name">Prima mensual</div><div class="bd-reason">$12.800 / mes</div></div></div>
+<div class="bd-item"><div class="bd-ico">🏠</div><div class="bd-info"><div class="bd-name">Suma asegurada</div><div class="bd-reason">$8.500.000 (desactualizada)</div></div></div>
+</div>
+<div class="inflation-alert" style="margin-bottom:14px">
+<div class="inf-title">⚠ Infraseguro detectado</div>
+<div class="inf-body">La suma se contrató hace 14 meses. Estimamos una pérdida de valor real del 28% por inflación.</div>
+</div>
+<button class="btn-brand" onclick="closeModal('modal-hogar');showTab('quotes')">Cotizar actualización</button>
+<div style="margin-top:10px">
+<button class="btn-sin" onclick="closeModal('modal-hogar');openSiniestroDesdePoliza({nombre:'Depto. Palermo',compania:'Sancor Seguros',polizaNum:'SC-1193847',plan:'Incendio, robo, inundación',icon:'🏠',ramo:'hogar',tipos:['incendio-h','robo-h','inundacion','dano-agua']})">🚨 Denunciar siniestro</button>
+</div>
+</div>
+</div>
+<div class="modal-overlay" id="modal-vida" onclick="closeModal('modal-vida')">
+<div class="modal-sheet" onclick="event.stopPropagation()">
+<div class="modal-handle"></div>
+<div class="modal-title">Vida individual</div>
+<div class="modal-sub">La Meridional · Póliza #LM-384729</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+<div class="bd-item"><div class="bd-ico">💰</div><div class="bd-info"><div class="bd-name">Capital asegurado</div><div class="bd-reason">$5.000.000</div></div></div>
+<div class="bd-item"><div class="bd-ico">👨‍👩‍👧</div><div class="bd-info"><div class="bd-name">Beneficiarios</div><div class="bd-reason">No declarados</div></div></div>
+</div>
+<div class="gap-card" style="margin:0 0 16px">
+<div class="gap-title">Suma asegurada insuficiente</div>
+<div class="gap-body">Con familia a cargo, se recomienda al menos 36 sueldos de cobertura. Tu póliza actual cubre aproximadamente 8.</div>
+</div>
+<button class="btn-brand" onclick="closeModal('modal-vida');showTab('quotes')">Ver opciones de mejora</button>
+</div>
+</div>
+<div class="modal-overlay" id="modal-add" onclick="closeModal('modal-add')">
+<div class="modal-sheet" onclick="event.stopPropagation()">
+<div class="modal-handle"></div>
+<div class="modal-title">Cargar póliza</div>
+<div class="modal-sub">Compatible con todas las compañías y productores de Argentina.</div>
+<div style="display:flex;gap:8px;margin-bottom:16px">
+<div id="add-opt-brokia" style="flex:1;border:1.5px solid var(--brand);background:var(--brand-light);border-radius:12px;padding:12px;text-align:center;cursor:pointer" onclick="selectAddOrigin('brokia')">
+<div style="font-size:20px;margin-bottom:4px">🤝</div>
+<div style="font-size:12px;font-weight:500;color:var(--brand-dark)">Con Brokia</div>
+<div style="font-size:10px;color:var(--gray-400);margin-top:2px">mi productor</div>
+</div>
+<div id="add-opt-otro" style="flex:1;border:1px solid var(--gray-200);background:#fff;border-radius:12px;padding:12px;text-align:center;cursor:pointer" onclick="selectAddOrigin('otro')">
+<div style="font-size:20px;margin-bottom:4px">📂</div>
+<div style="font-size:12px;font-weight:500;color:var(--gray-700)">Otro productor</div>
+<div style="font-size:10px;color:var(--gray-400);margin-top:2px">o compañía directa</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+<div class="menu-item" onclick="showToast('📸 Abriendo cámara...');closeModal('modal-add')">
+<div class="menu-icon">📸</div>
+<div class="menu-label">Fotografiar la póliza</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('📄 Seleccionando PDF...');closeModal('modal-add')">
+<div class="menu-icon">📄</div>
+<div class="menu-label">Subir PDF</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('📧 Revisando tu email...');closeModal('modal-add')">
+<div class="menu-icon">📧</div>
+<div class="menu-label">Importar desde email</div>
+<div class="menu-arrow">›</div>
+</div>
+</div>
+<button class="btn-outline" onclick="closeModal('modal-add')">Cancelar</button>
+</div>
+</div>
+<div class="modal-overlay" id="modal-tercero-auto" onclick="closeModal('modal-tercero-auto')">
+<div class="modal-sheet" onclick="event.stopPropagation()">
+<div class="modal-handle"></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+<div style="background:#F3E8FF;border-radius:8px;padding:4px 10px;font-size:10px;font-weight:600;color:#7C3AED">Otro productor</div>
+</div>
+<div class="modal-title">Honda City 2022</div>
+<div class="modal-sub">Galicia Seguros · Póliza #GS-4421987 · Vence 30/05/2026</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+<div class="bd-item"><div class="bd-ico">📋</div><div class="bd-info"><div class="bd-name">Plan</div><div class="bd-reason">Terceros Completo</div></div></div>
+<div class="bd-item"><div class="bd-ico">💰</div><div class="bd-info"><div class="bd-name">Prima mensual</div><div class="bd-reason">$44.200 / mes</div></div></div>
+<div class="bd-item"><div class="bd-ico">🛡</div><div class="bd-info"><div class="bd-name">Suma asegurada</div><div class="bd-reason">$11.500.000</div></div></div>
+</div>
+<div class="gap-card" style="margin:0 0 14px">
+<div class="gap-title">⚠ Brecha detectada — sin daño propio</div>
+<div class="gap-body">Si alguien te choca y se da a la fuga, no tenés cobertura para reparar tu auto. Un upgrade a todo riesgo lo resuelve.</div>
+</div>
+<div style="background:var(--amber-light);border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px">
+<div style="font-size:12px;font-weight:600;color:#92400E;margin-bottom:3px">Vence en 15 días</div>
+<div style="font-size:11px;color:var(--gray-600);line-height:1.5">Es el momento ideal para cotizar. Tu productor Brokia puede ofrecerte una opción mejor.</div>
+</div>
+<button class="btn-brand" onclick="closeModal('modal-tercero-auto');showTab('quotes')">Cotizar con mi productor →</button>
+<div style="margin-top:10px">
+<button class="btn-outline" onclick="closeModal('modal-tercero-auto');showTab('analysis')">Ver análisis IA completo</button>
+</div>
+<div style="margin-top:10px">
+<button class="btn-sin" onclick="closeModal('modal-tercero-auto');openSiniestroDesdePoliza({nombre:'Honda City 2022',compania:'Galicia Seguros',polizaNum:'GS-4421987',plan:'Terceros Completo',icon:'🚗',ramo:'auto',tipos:['choque','robo','granizo','incendio']})">🚨 Denunciar siniestro</button>
+</div>
+</div>
+</div>
+<div class="modal-overlay" id="modal-ai" onclick="closeModal('modal-ai')">
+<div class="modal-sheet" onclick="event.stopPropagation()" style="max-height:80vh;overflow-y:auto">
+<div class="modal-handle"></div>
+<div class="modal-title">Informe IA completo</div>
+<div class="modal-sub">VW Gol 2019 · Federación Patronal · Análisis de 47 cláusulas</div>
+<div style="background:var(--gray-50);border-radius:12px;padding:14px;margin-bottom:16px;font-size:13px;color:var(--gray-700);line-height:1.7">
+Tu póliza de terceros completo te cubre ante daños que le causes a un tercero, pero no protege tu propio vehículo ante robo parcial ni daño propio por accidente. La cobertura de granizo es limitada: solo aplica a capot y techo, excluyendo laterales y vidrios. No contás con asistencia en ruta incluida. <br><br>
+<strong>Lo más importante:</strong> si alguien te choca y se da a la fuga, no tenés cobertura de daño propio para reparar tu auto.
+</div>
+<div style="margin-bottom:16px">
+<div class="gap-card" style="margin:0 0 8px">
+<div class="gap-title">Brecha 1: Sin daño propio</div>
+<div class="gap-body">Recomendamos upgrade a todo riesgo. Diferencia estimada: $9.700/mes.</div>
+</div>
+<div class="gap-card" style="margin:0">
+<div class="gap-title">Brecha 2: Sin asistencia en ruta</div>
+<div class="gap-body">Podés agregar asistencia como cobertura adicional desde $3.200/mes.</div>
+</div>
+</div>
+<button class="btn-brand" onclick="closeModal('modal-ai');showTab('quotes')">Cotizar mejora ahora</button>
+</div>
+</div>
+<div class="modal-overlay" id="modal-asesor" onclick="closeModal('modal-asesor')">
+<div class="modal-sheet" onclick="event.stopPropagation()">
+<div class="modal-handle"></div>
+<div class="modal-title">Productor matriculado</div>
+<div class="modal-sub">Asesoramiento personalizado, sin costo adicional. Atención de lunes a viernes de 9 a 18hs.</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+<div class="menu-item" onclick="showToast('📱 Abriendo WhatsApp...');closeModal('modal-asesor')">
+<div class="menu-icon">💬</div>
+<div class="menu-label">WhatsApp directo</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('📝 Formulario de consulta enviado');closeModal('modal-asesor')">
+<div class="menu-icon">📝</div>
+<div class="menu-label">Enviar consulta</div>
+<div class="menu-arrow">›</div>
+</div>
+<div class="menu-item" onclick="showToast('📅 Abriendo agenda de turnos...');closeModal('modal-asesor')">
+<div class="menu-icon">📅</div>
+<div class="menu-label">Agendar videollamada</div>
+<div class="menu-arrow">›</div>
+</div>
+</div>
+<button class="btn-outline" onclick="closeModal('modal-asesor')">Ahora no</button>
+</div>
+</div>
+<div class="modal-overlay" id="modal-contratar" onclick="closeModal('modal-contratar')">
+<div class="modal-sheet" onclick="event.stopPropagation()">
+<div class="modal-handle"></div>
+<div class="modal-title">Contratar con Federación Patronal</div>
+<div class="modal-sub">Todo riesgo · VW Gol 2019 · $48.200/mes · El productor te contacta para finalizar la contratación.</div>
+<div style="background:var(--brand-light);border-radius:12px;padding:14px;margin-bottom:20px">
+<div style="font-size:13px;font-weight:600;color:var(--brand-dark);margin-bottom:6px">¿Qué pasa ahora?</div>
+<div style="font-size:12px;color:var(--gray-600);line-height:1.6">1. Confirmás tu datos en el formulario<br>2. El productor verifica la cotización<br>3. Recibís la póliza por email en 24hs<br>4. Tu billetera se actualiza automáticamente</div>
+</div>
+<button class="btn-brand" onclick="showToast('¡Solicitud enviada! Te contactamos pronto.');closeModal('modal-contratar')">Confirmar contratación</button>
+</div>
+</div>
+<div class="modal-overlay" id="modal-retiro-detalle" onclick="closeModal('modal-retiro-detalle')">
+<div class="modal-sheet" onclick="event.stopPropagation()" style="max-height:85vh;overflow-y:auto">
+<div class="modal-handle"></div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+<div style="width:44px;height:44px;border-radius:12px;background:var(--brand-light);display:flex;align-items:center;justify-content:center;font-size:20px">🏛️</div>
+<div>
+<div class="modal-title" style="margin-bottom:2px">Tu póliza de retiro</div>
+<div style="font-size:12px;color:var(--gray-400)">Apertura con puntos Brokia · sin costo inicial</div>
+</div>
+</div>
+<div style="background:var(--brand);border-radius:16px;padding:16px 18px;margin-bottom:16px">
+<div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em">Proyección estimada</div>
+<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+<div style="text-align:center">
+<div style="font-size:11px;color:rgba(255,255,255,.5)">Hoy</div>
+<div style="font-size:19px;font-weight:600;color:#fff">$34k</div>
+<div style="font-size:10px;color:rgba(255,255,255,.45)">primer aporte</div>
+</div>
+<div style="display:flex;align-items:center;color:rgba(255,255,255,.3);font-size:16px;padding-top:8px">→</div>
+<div style="text-align:center">
+<div style="font-size:11px;color:rgba(255,255,255,.5)">5 años</div>
+<div style="font-size:19px;font-weight:600;color:#6EE7B7">$380k</div>
+<div style="font-size:10px;color:rgba(255,255,255,.45)">+ aportes extras</div>
+</div>
+<div style="display:flex;align-items:center;color:rgba(255,255,255,.3);font-size:16px;padding-top:8px">→</div>
+<div style="text-align:center">
+<div style="font-size:11px;color:rgba(255,255,255,.5)">10 años</div>
+<div style="font-size:19px;font-weight:600;color:#FCD34D">$1.2M</div>
+<div style="font-size:10px;color:rgba(255,255,255,.45)">capital acumulado</div>
+</div>
+</div>
+<div style="font-size:10px;color:rgba(255,255,255,.35);text-align:center">Proyección referencial según tasa técnica de compañía.</div>
+</div>
+<div style="font-size:12px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Qué incluye</div>
+<div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px">
+<div class="bd-item"><div class="bd-ico">💰</div><div class="bd-info"><div class="bd-name">Componente de ahorro</div><div class="bd-reason">Capital con tasa técnica garantizada</div></div><div style="font-size:10px;color:var(--green);font-weight:600">Incluido</div></div>
+<div class="bd-item"><div class="bd-ico">❤️</div><div class="bd-info"><div class="bd-name">Cobertura de vida</div><div class="bd-reason">Capital ante fallecimiento o invalidez</div></div><div style="font-size:10px;color:var(--green);font-weight:600">Incluido</div></div>
+<div class="bd-item"><div class="bd-ico">📲</div><div class="bd-info"><div class="bd-name">Visible en tu billetera</div><div class="bd-reason">Valor actualizado en Brokia</div></div><div style="font-size:10px;color:var(--green);font-weight:600">Incluido</div></div>
+<div class="bd-item"><div class="bd-ico">➕</div><div class="bd-info"><div class="bd-name">Aportes adicionales</div><div class="bd-reason">Opcionales, sin obligación mensual</div></div><div style="font-size:10px;color:var(--brand);font-weight:600">Opcional</div></div>
+</div>
+<div style="font-size:12px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Compañías disponibles</div>
+<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:7px 12px;font-size:12px;font-weight:500;color:var(--gray-700)">Prudential</div>
+<div style="background:var(--brand-light);border:1.5px solid var(--brand);border-radius:10px;padding:7px 12px;font-size:12px;font-weight:500;color:var(--brand)">SMG Life ⭐</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:7px 12px;font-size:12px;font-weight:500;color:var(--gray-700)">MetLife</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:7px 12px;font-size:12px;font-weight:500;color:var(--gray-700)">MAPFRE</div>
+</div>
+<div style="background:var(--brand-light);border-radius:12px;padding:12px 14px;margin-bottom:16px">
+<div style="font-size:12px;font-weight:600;color:var(--brand-dark);margin-bottom:3px">¿Y si después quiero parar?</div>
+<div style="font-size:11px;color:var(--gray-600);line-height:1.6">Podés solicitar rescate del capital acumulado en cualquier momento. Las condiciones dependen de la compañía y tiempo transcurrido.</div>
+</div>
+<button class="btn-brand" onclick="showToast('¡Perfecto! El productor te contacta para abrir tu póliza.');closeModal('modal-retiro-detalle')">Quiero abrir mi póliza de retiro</button>
+<div style="text-align:center;margin-top:12px">
+<button style="background:none;border:none;font-size:13px;color:var(--gray-400);cursor:pointer;font-family:var(--font)" onclick="closeModal('modal-retiro-detalle')">Prefiero otra opción</button>
+</div>
+</div>
+</div>
+<div class="modal-overlay" id="modal-microseguro" onclick="closeModal('modal-microseguro')">
+<div class="modal-sheet" id="modal-micro-sheet" onclick="event.stopPropagation()" style="max-height:85vh;overflow-y:auto">
+<div class="modal-handle"></div>
+<div class="modal-title">Cargando...</div>
+</div>
+</div>
+<div class="modal-overlay" id="modal-microseguros" onclick="closeModal('modal-microseguros')">
+<div class="modal-sheet" onclick="event.stopPropagation()" style="max-height:88vh;overflow-y:auto">
+<div class="modal-handle"></div>
+<div class="modal-title">Microseguros</div>
+<div class="modal-sub">Coberturas simples, económicas y 100% digitales. Se contratan en minutos.</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick="closeModal('modal-microseguros');openMicroseguro('celular')">
+<div style="width:44px;height:44px;border-radius:12px;background:#EEF2FF;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">📱</div>
+<div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--gray-800)">Celular</div><div style="font-size:11px;color:var(--gray-400)">Rotura, agua, robo · desde $2.800/mes</div></div>
+<div style="font-size:14px;color:var(--gray-300)">›</div>
+</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick="closeModal('modal-microseguros');openMicroseguro('bici')">
+<div style="width:44px;height:44px;border-radius:12px;background:#ECFDF5;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🚲</div>
+<div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--gray-800)">Bicicleta</div><div style="font-size:11px;color:var(--gray-400)">Robo, daño, RC · desde $3.200/mes</div></div>
+<div style="font-size:14px;color:var(--gray-300)">›</div>
+</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick="closeModal('modal-microseguros');openMicroseguro('monopatin')">
+<div style="width:44px;height:44px;border-radius:12px;background:#F3E8FF;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🛴</div>
+<div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--gray-800)">Monopatín</div><div style="font-size:11px;color:var(--gray-400)">Eléctrico o mecánico · desde $2.500/mes</div></div>
+<div style="font-size:14px;color:var(--gray-300)">›</div>
+</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick="closeModal('modal-microseguros');openMicroseguro('instrumento')">
+<div style="width:44px;height:44px;border-radius:12px;background:#FFFBEB;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🎸</div>
+<div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--gray-800)">Instrumento musical</div><div style="font-size:11px;color:var(--gray-400)">Amateur y profesional · desde $4.100/mes</div></div>
+<div style="font-size:14px;color:var(--gray-300)">›</div>
+</div>
+<div style="background:var(--brand);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick="closeModal('modal-microseguros');openMicroseguro('viaje')">
+<div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✈️</div>
+<div style="flex:1"><div style="font-size:14px;font-weight:500;color:#fff">Seguro de viaje</div><div style="font-size:11px;color:rgba(255,255,255,.6)">Médico, cancelación, equipaje · desde $8.500</div></div>
+<div style="font-size:14px;color:rgba(255,255,255,.4)">›</div>
+</div>
+<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick="closeModal('modal-microseguros');openMicroseguro('laptop')">
+<div style="width:44px;height:44px;border-radius:12px;background:#EEF2FF;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">💻</div>
+<div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--gray-800)">Notebook / tablet</div><div style="font-size:11px;color:var(--gray-400)">Rotura, robo, líquidos · desde $5.600/mes</div></div>
+<div style="font-size:14px;color:var(--gray-300)">›</div>
+</div>
+</div>
+<button class="btn-outline" onclick="closeModal('modal-microseguros')">Cerrar</button>
+</div>
+</div>
+<script>
+function selectAddOrigin(type){
+var bk=document.getElementById("add-opt-brokia");
+var ot=document.getElementById("add-opt-otro");
+if(type==="brokia"){
+bk.style.border="1.5px solid #4338CA";bk.style.background="#EEF2FF";
+ot.style.border="1px solid #E5E7EB";ot.style.background="#fff";
+} else {
+ot.style.border="1.5px solid #7C3AED";ot.style.background="#F3E8FF";
+bk.style.border="1px solid #E5E7EB";bk.style.background="#fff";
+}
+}
+var sinCurrentStep = 1;
+var sinType = 'choque';
+var sinHasTercero = true;
+var sinDocs = {
+choque: [
+{ico:'🪪', name:'DNI del asegurado', detail:'Frente y dorso', req:'obligatorio', checked:false},
+{ico:'🚗', name:'Licencia de conducir', detail:'Vigente al momento del siniestro', req:'obligatorio', checked:false},
+{ico:'📋', name:'Cédula verde del vehículo', detail:'Tarjeta de identificación del auto', req:'obligatorio', checked:false},
+{ico:'🔧', name:'VTV / RTO vigente', detail:'Verificación técnica vehicular', req:'obligatorio', checked:false},
+{ico:'👮', name:'Acta policial', detail:'Si hubo lesionados o tercero en fuga', req:'si hay tercero', checked:false},
+{ico:'📝', name:'Datos del tercero', detail:'Nombre, DNI, patente y seguro', req:'si aplica', checked:false},
+{ico:'💰', name:'Presupuesto del taller', detail:'Para daños en tu vehículo', req:'opcional', checked:false}
+],
+robo: [
+{ico:'🪪', name:'DNI del asegurado', detail:'Frente y dorso', req:'obligatorio', checked:false},
+{ico:'📋', name:'Cédula verde del vehículo', detail:'O cédula azul si aplica', req:'obligatorio', checked:false},
+{ico:'🔧', name:'Título del automotor', detail:'Documento de propiedad', req:'obligatorio', checked:false},
+{ico:'👮', name:'Denuncia policial', detail:'Obligatoria para todos los robos', req:'obligatorio', checked:false},
+{ico:'🔑', name:'Todas las llaves del vehículo', detail:'El juego completo que tenías', req:'obligatorio', checked:false},
+{ico:'🚗', name:'Licencia de conducir', detail:'Del titular asegurado', req:'obligatorio', checked:false},
+{ico:'📡', name:'Dispositivo de rastreo', detail:'Si tenía GPS instalado', req:'opcional', checked:false}
+],
+granizo: [
+{ico:'🪪', name:'DNI del asegurado', detail:'Frente y dorso', req:'obligatorio', checked:false},
+{ico:'📋', name:'Cédula verde del vehículo', detail:'Tarjeta de identificación del auto', req:'obligatorio', checked:false},
+{ico:'🚗', name:'Licencia de conducir', detail:'Del titular asegurado', req:'obligatorio', checked:false},
+{ico:'💰', name:'Presupuesto del taller', detail:'Detallando cada daño por granizo', req:'obligatorio', checked:false},
+{ico:'🌦️', name:'Fecha y zona del granizo', detail:'Para validación meteorológica', req:'obligatorio', checked:false},
+{ico:'🔧', name:'VTV / RTO vigente', detail:'Verificación técnica vehicular', req:'opcional', checked:false}
+],
+incendio: [
+{ico:'🪪', name:'DNI del asegurado', detail:'Frente y dorso', req:'obligatorio', checked:false},
+{ico:'📋', name:'Cédula verde del vehículo', detail:'Tarjeta de identificación del auto', req:'obligatorio', checked:false},
+{ico:'🚒', name:'Acta de bomberos', detail:'Informe oficial del siniestro', req:'obligatorio', checked:false},
+{ico:'👮', name:'Acta policial', detail:'Denuncia ante la comisaría más cercana', req:'obligatorio', checked:false},
+{ico:'🔧', name:'Título del automotor', detail:'Documento de propiedad', req:'obligatorio', checked:false},
+{ico:'💰', name:'Presupuesto / peritaje', detail:'Valoración de daños por el taller', req:'obligatorio', checked:false},
+{ico:'🚗', name:'Licencia de conducir', detail:'Del titular asegurado', req:'opcional', checked:false}
+]
+};
+var sinFotos = {
+choque: [
+{ico:'💥', label:'Zona dañada (cerca)'},
+{ico:'🚗', label:'Auto completo (lejos)'},
+{ico:'↔️', label:'Costado del impacto'},
+{ico:'🔢', label:'Patente propia'},
+{ico:'🔢', label:'Patente tercero'},
+{ico:'📍', label:'Lugar del hecho'}
+],
+robo: [
+{ico:'🏠', label:'Lugar donde estaba'},
+{ico:'🔓', label:'Cerradura / forzado'},
+{ico:'📍', label:'Entorno del lugar'},
+{ico:'📹', label:'Cámara de seguridad'},
+],
+granizo: [
+{ico:'🔝', label:'Capot (completo)'},
+{ico:'🔝', label:'Techo'},
+{ico:'↔️', label:'Lateral izquierdo'},
+{ico:'↔️', label:'Lateral derecho'},
+{ico:'🪟', label:'Vidrios / luneta'},
+{ico:'🚗', label:'Auto completo'}
+],
+incendio: [
+{ico:'🔥', label:'Zona del incendio'},
+{ico:'🚗', label:'Interior del auto'},
+{ico:'🚗', label:'Exterior completo'},
+{ico:'🔌', label:'Motor / cableado'},
+]
+};
+var sinTips = {
+choque: 'Fotografiá desde múltiples ángulos antes de mover el vehículo. Si hay tercero, sacá foto de su patente, licencia y carnet de seguro.',
+robo: 'Fotografiá el lugar donde estaba el vehículo y cualquier señal de forzamiento. Si tenés cámara de seguridad cerca, avisale al vecino para guardar el video.',
+granizo: 'Sacá fotos de cada panel dañado por separado. La aseguradora necesita ver la extensión completa de cada golpe para el peritaje.',
+incendio: 'No toques nada hasta que lleguen los bomberos. Las fotos del interior y el motor son clave para el peritaje de daños.'
+};
+var sinTypeLabels = {
+choque: '💥 Choque',
+robo: '🔓 Robo',
+granizo: '🌧️ Granizo',
+incendio: '🔥 Incendio'
+};
+var sinTypeHints = {
+choque: 'Necesitarás: DNI, licencia, cédula verde, VTV y fotos del daño. Si hay tercero, también acta policial y sus datos.',
+robo: 'Necesitarás: DNI, cédula verde, título del auto, denuncia policial y todas las llaves del vehículo.',
+granizo: 'Necesitarás: DNI, cédula verde, presupuesto del taller detallado y fotos de cada panel dañado.',
+incendio: 'Necesitarás: DNI, cédula verde, acta de bomberos, acta policial y peritaje de daños.'
+};
+function selectType(type, el) {
+sinType = type;
+document.querySelectorAll('.sin-type-btn').forEach(function(b){ b.classList.remove('sel'); });
+el.classList.add('sel');
+var hint = document.getElementById('sin-type-hint');
+var icons = {choque:'💥',robo:'🔓',granizo:'🌧️',incendio:'🔥'};
+var names = {choque:'Choque',robo:'Robo',granizo:'Granizo',incendio:'Incendio'};
+hint.innerHTML = '<div style="font-size:12px;font-weight:500;color:var(--brand-dark);margin-bottom:3px">'+icons[type]+' '+names[type]+' seleccionado</div><div style="font-size:11px;color:var(--gray-600);line-height:1.5">'+sinTypeHints[type]+'</div>';
+var terceroSection = document.getElementById('sin-tercero-section');
+if(terceroSection) terceroSection.style.display = type==='choque' ? 'block' : 'none';
+}
+function sinTerceroSel(hasTercero) {
+sinHasTercero = hasTercero;
+var si = document.getElementById('sin-tercero-si');
+var no = document.getElementById('sin-tercero-no');
+var data = document.getElementById('sin-tercero-data');
+if(hasTercero) {
+si.style.border='1.5px solid var(--brand)'; si.style.background='var(--brand-light)'; si.style.color='var(--brand-dark)';
+no.style.border='1px solid var(--gray-200)'; no.style.background='#fff'; no.style.color='var(--gray-600)';
+data.style.display='flex';
+} else {
+no.style.border='1.5px solid var(--brand)'; no.style.background='var(--brand-light)'; no.style.color='var(--brand-dark)';
+si.style.border='1px solid var(--gray-200)'; si.style.background='#fff'; si.style.color='var(--gray-600)';
+data.style.display='none';
+}
+}
+function renderDocs() {
+var docs = sinDocs[sinType];
+var list = document.getElementById('sin-doc-list');
+list.innerHTML = '';
+docs.forEach(function(doc, i) {
+var cls = doc.checked ? 'sin-doc-item checked' : 'sin-doc-item';
+var chk = doc.checked ? '✓' : '';
+var reqCls = doc.req==='obligatorio' ? 'req-ob' : 'req-op';
+list.innerHTML += '<div class="'+cls+'" onclick="toggleDoc('+i+')" id="sindoc-'+i+'"><div class="sin-doc-check">'+chk+'</div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--gray-800)">'+doc.ico+' '+doc.name+'</div><div style="font-size:11px;color:var(--gray-400);margin-top:2px">'+doc.detail+'</div><span class="sin-doc-req '+reqCls+'">'+doc.req+'</span></div></div>';
+});
+var obligatorios = docs.filter(function(d){ return d.req==='obligatorio'; }).length;
+var checkedOb = docs.filter(function(d){ return d.req==='obligatorio' && d.checked; }).length;
+var alert = document.getElementById('sin-doc-alert');
+if(checkedOb < obligatorios) {
+alert.style.background='var(--amber-light)'; alert.style.border='1px solid #FDE68A';
+alert.innerHTML='<div style="font-size:12px;font-weight:500;color:#92400E;margin-bottom:3px">'+checkedOb+'/'+obligatorios+' documentos obligatorios listos</div><div style="font-size:11px;color:var(--gray-600);line-height:1.5">Podés enviar la denuncia igual y completar los documentos faltantes con tu productor.</div>';
+} else {
+alert.style.background='var(--green-light)'; alert.style.border='1px solid #A7F3D0';
+alert.innerHTML='<div style="font-size:12px;font-weight:500;color:#065F46;margin-bottom:2px">✓ Todos los documentos obligatorios listos</div><div style="font-size:11px;color:var(--gray-600)">Podés continuar con las fotos.</div>';
+}
+}
+function toggleDoc(i) {
+sinDocs[sinType][i].checked = !sinDocs[sinType][i].checked;
+renderDocs();
+}
+function renderFotos() {
+var fotos = sinFotos[sinType];
+var grid = document.getElementById('sin-foto-grid');
+grid.innerHTML = '';
+fotos.forEach(function(f) {
+grid.innerHTML += '<div class="sin-foto-slot" onclick="uploadFoto(this)"><div style="font-size:20px;margin-bottom:4px">'+f.ico+'</div><div style="font-size:10px;color:var(--gray-400);line-height:1.3">'+f.label+'</div></div>';
+});
+document.getElementById('sin-foto-tip').textContent = sinTips[sinType];
+}
+function uploadFoto(el) {
+el.classList.toggle('uploaded');
+var icon = el.querySelector('div:first-child');
+if(el.classList.contains('uploaded')) {
+icon.textContent = '✅';
+showToast('📸 Foto adjuntada');
+} else {
+showToast('Foto removida');
+}
+}
+function updateStepPills(step) {
+for(var i=1; i<=5; i++) {
+var pill = document.getElementById('sinp-'+i);
+pill.classList.remove('active','done');
+if(i < step) pill.classList.add('done');
+else if(i === step) pill.classList.add('active');
+}
+}
+function sinNext(direction) {
+if(direction === 0) { sinCurrentStep--; }
+else { sinCurrentStep++; }
+sinCurrentStep = Math.max(1, Math.min(5, sinCurrentStep));
+for(var i=1; i<=5; i++) {
+var s = document.getElementById('sin-s'+i);
+if(s) s.style.display = (i===sinCurrentStep) ? '' : 'none';
+}
+updateStepPills(sinCurrentStep);
+if(sinCurrentStep===3) renderDocs();
+if(sinCurrentStep===4) renderFotos();
+if(sinCurrentStep===5) {
+document.getElementById('sin-resumen-tipo').textContent = sinTypeLabels[sinType];
+var fotos = document.querySelectorAll('.sin-foto-slot.uploaded');
+document.getElementById('sin-resumen-fotos').textContent = fotos.length + ' adjuntas';
+}
+document.getElementById('sin-screen-title').textContent = ['','Denunciar siniestro','Datos del siniestro','Documentación','Fotos','Revisión final'][sinCurrentStep];
+}
+function sinBack() {
+if(sinCurrentStep <= 1) { closeSiniestro(); }
+else { sinNext(0); }
+}
+function sinEnviar() {
+showToast('✅ Denuncia enviada. El productor te contacta en menos de 2hs.');
+setTimeout(function(){ closeSiniestro(); sinCurrentStep=1; sinNext(999); sinCurrentStep=1; }, 500);
+}
+function openSiniestro(){
+document.getElementById("siniestro-screen").classList.add("open");
+}
+function closeSiniestro(){
+document.getElementById("siniestro-screen").classList.remove("open");
+}
+function openDashboard(){
+document.getElementById("dashboard-screen").classList.add("open");
+}
+function closeDashboard(){
+document.getElementById("dashboard-screen").classList.remove("open");
+}
+function selectSinType(el){
+var grid=el.parentElement;
+grid.querySelectorAll("div[onclick]").forEach(function(d){
+d.style.background="#fff";d.style.border="1px solid #E5E7EB";
+});
+el.style.background="#EEF2FF";el.style.border="1.5px solid #4338CA";
+}
+function openRetiro(){
+document.getElementById('retiro-screen').classList.add('open');
+}
+function closeRetiro(){
+document.getElementById('retiro-screen').classList.remove('open');
+}
+function openReferidos(){
+document.getElementById('referidos-screen').classList.add('open');
+}
+function closeReferidos(){
+document.getElementById('referidos-screen').classList.remove('open');
+}
+function copyCode(){
+showToast('✓ Código BROKIA-MR72 copiado');
+var pts = parseInt(document.getElementById('ref-pts-display').textContent);
+document.getElementById('ref-pts-display').textContent = pts;
+}
+var obStep = 1;
+var obSteps = [
+null,
+{
+eyebrow:'Tu perfil', q:'¿Cuántos años tenés?', sub:'Tu edad define qué coberturas son prioritarias.', type:'single', key:'edad',
+opts:[
+{icon:'🎓',label:'18 – 30',desc:'Joven activo'},
+{icon:'💼',label:'31 – 45',desc:'Familia en crecimiento'},
+{icon:'🏡',label:'46 – 60',desc:'Patrimonio consolidado'},
+{icon:'🌿',label:'Más de 60',desc:'Planificación patrimonial'}
+]
+},
+{
+eyebrow:'Tus bienes', q:'¿Qué tenés para proteger?', sub:'Marcá todo lo que aplique.', type:'multi', key:'bienes',
+opts:[
+{icon:'🚗',label:'Vehículo',desc:'Auto, moto o camioneta',val:'auto'},
+{icon:'🏠',label:'Vivienda propia',desc:'Casa o departamento',val:'hogar'},
+{icon:'👨‍👩‍👧',label:'Familia a cargo',desc:'Hijos o dependientes',val:'familia'},
+{icon:'🏪',label:'Negocio o comercio',desc:'Local, taller o empresa',val:'negocio'},
+{icon:'❤️',label:'Solo yo',desc:'Cobertura individual',val:'salud'}
+]
+},
+{
+eyebrow:'Tus seguros actuales', q:'¿Cuáles tenés hoy?', sub:'No importa la compañía. Marcá los activos.', type:'multi', key:'seguros',
+opts:[
+{icon:'🚗',label:'Seguro de auto',desc:'Cualquier plan',val:'s-auto'},
+{icon:'🏠',label:'Seguro de hogar',desc:'Incendio, robo, inundación',val:'s-hogar'},
+{icon:'❤️',label:'Seguro de vida',desc:'Individual o grupal',val:'s-vida'},
+{icon:'🏥',label:'Prepaga o médico',desc:'Cobertura privada',val:'s-salud'},
+{icon:'❌',label:'Ninguno todavía',desc:'Empezar desde cero',val:'s-ninguno'}
+]
+},
+{
+eyebrow:'Último paso', q:'¿Cuándo renovaste tus seguros?', sub:'Esto afecta el valor real de tu cobertura.', type:'single', key:'ultima',
+opts:[
+{icon:'✅',label:'Hace menos de 6 meses',desc:'Están actualizados'},
+{icon:'🕐',label:'Entre 6 meses y 1 año',desc:'Pueden estar desactualizados'},
+{icon:'⏳',label:'Hace más de 1 año',desc:'Alta probabilidad de infraseguro'},
+{icon:'❓',label:'No lo sé',desc:'Nunca lo revisé'}
+]
+}
+];
+function renderOb(){
+var s = obSteps[obStep];
+var pct = (obStep / 4) * 100;
+document.getElementById('ob-fill').style.width = pct+'%';
+document.getElementById('ob-step-lbl').textContent = obStep+' de 4';
+document.getElementById('ob-back-btn').style.opacity = obStep===1?'0.3':'1';
+var html = '<div class="ob-eyebrow">'+s.eyebrow+'</div>';
+html += '<div class="ob-q">'+s.q+'</div>';
+html += '<div class="ob-sub">'+s.sub+'</div>';
+if(s.type==='single'){
+html += '<div class="ob-options">';
+s.opts.forEach(function(o,i){
+var sel = obState[s.key]==(o.label||o.val)?'sel':'';
+html += '<div class="ob-opt '+sel+'" onclick="obSelect('+i+')" id="obopt-'+i+'"><div class="ob-opt-icon">'+o.icon+'</div><div class="ob-opt-text"><div class="ob-opt-label">'+o.label+'</div><div class="ob-opt-desc">'+o.desc+'</div></div><div class="ob-opt-check">✓</div></div>';
+});
+html += '</div>';
+var dis = !obState[s.key] ? 'disabled' : '';
+html += '<button class="btn-brand" '+dis+' id="ob-next" onclick="obNext()">'+( obStep<4 ? 'Continuar' : 'Ver mi índice de cobertura')+'</button>';
+} else {
+html += '<div class="ob-multi">';
+s.opts.forEach(function(o,i){
+var sel = (obState[s.key]||[]).includes(o.val)?'sel':'';
+html += '<div class="ob-chip '+sel+'" onclick="obToggle(\''+o.val+'\')" id="obchip-'+o.val+'"><div class="ob-chip-icon">'+o.icon+'</div><div class="ob-chip-text"><div class="ob-chip-label">'+o.label+'</div><div class="ob-chip-sub">'+o.desc+'</div></div><div class="ob-chip-check">✓</div></div>';
+});
+html += '</div>';
+var dis2 = (obState[s.key]||[]).length===0 ? 'disabled' : '';
+html += '<button class="btn-brand" '+dis2+' id="ob-next" onclick="obNext()">'+( obStep<4 ? 'Continuar' : 'Ver mi índice de cobertura' )+'</button>';
+}
+document.getElementById('ob-body').innerHTML = html;
+}
+function obSelect(i){
+var s = obSteps[obStep];
+obState[s.key] = s.opts[i].label;
+renderOb();
+}
+function obToggle(val){
+var s = obSteps[obStep];
+if(!obState[s.key]) obState[s.key]=[];
+if(val==='s-ninguno'){ obState[s.key]=['s-ninguno']; }
+else {
+obState[s.key] = obState[s.key].filter(function(v){return v!=='s-ninguno';});
+var idx = obState[s.key].indexOf(val);
+if(idx>-1) obState[s.key].splice(idx,1);
+else obState[s.key].push(val);
+}
+renderOb();
+}
+function obBack(){
+if(obStep>1){ obStep--; renderOb(); }
+else { showScreen('splash-screen'); }
+}
+function obNext(){
+if(obStep<4){ obStep++; renderOb(); }
+else { calcScore(); }
+}
+function calcScore(){
+var weights = {auto:25,hogar:22,familia:23,negocio:15,salud:15};
+var segMap = {auto:'s-auto',hogar:'s-hogar',familia:'s-vida',negocio:'s-vida',salud:'s-salud'};
+var infPenalty = 0;
+if(obState.ultima==='Hace más de 1 año') infPenalty=0.18;
+else if(obState.ultima==='Entre 6 meses y 1 año') infPenalty=0.08;
+else if(obState.ultima==='No lo sé') infPenalty=0.14;
+var seguros = obState.seguros||[];
+var hasSegs = !seguros.includes('s-ninguno') && seguros.length>0;
+var bienes = obState.bienes||[];
+var breakdown = [];
+var total=0, maxTotal=0;
+if(bienes.length===0){
+bienes=['auto','hogar','familia'];
+hasSegs=true;
+}
+bienes.forEach(function(b){
+var w=weights[b]||20;
+var tiene = hasSegs && seguros.includes(segMap[b]);
+var pts = tiene ? Math.round(w*(1-infPenalty)) : 0;
+var reason = !tiene ? 'Sin cobertura detectada' : infPenalty>0.1 ? 'Posible infraseguro' : 'Cobertura vigente';
+var icons = {auto:'🚗',hogar:'🏠',familia:'❤️',negocio:'🏪',salud:'🏥'};
+var labels = {auto:'Vehículo',hogar:'Vivienda',familia:'Vida / familia',negocio:'Comercio',salud:'Salud'};
+breakdown.push({icon:icons[b]||'📋',label:labels[b]||b,max:w,score:pts,reason:reason,tiene:tiene});
+total+=pts; maxTotal+=w;
+});
+var score = Math.round((total/maxTotal)*100);
+score = Math.max(0,Math.min(100,score));
+showScreen('score-screen');
+navHistory.push({type:'screen', id:'ob-screen'});
+setTimeout(function(){ animScore(score, breakdown, infPenalty, hasSegs); }, 200);
+}
+function animScore(score, breakdown, infPenalty, hasSegs){
+var arc = document.getElementById('result-arc');
+var circ = 364;
+arc.style.strokeDashoffset = circ - (circ*score/100);
+var num = document.getElementById('result-num');
+var start=Date.now(), dur=1100;
+(function tick(){
+var p=Math.min((Date.now()-start)/dur,1);
+num.textContent=Math.round(score*p);
+if(p<1) requestAnimationFrame(tick);
+})();
+var title='', sub='', arcColor='';
+if(score>=75){title='Muy bien protegido';sub='Tu cobertura es sólida. Revisá los detalles para optimizarla.';arcColor='#6EE7B7';}
+else if(score>=50){title='Protección moderada';sub='Tenés base, pero hay brechas importantes que podés cerrar.';arcColor='#FCD34D';}
+else if(score>=25){title='Cobertura insuficiente';sub='Varios bienes están desprotegidos. Es momento de actuar.';arcColor='#FDBA74';}
+else {title='Muy expuesto al riesgo';sub='Prácticamente sin protección. Un siniestro puede ser devastador.';arcColor='#FCA5A5';}
+arc.style.stroke=arcColor;
+document.getElementById('result-title').textContent=title;
+document.getElementById('result-sub').textContent=sub;
+var pills = document.getElementById('result-pills');
+pills.innerHTML='';
+breakdown.forEach(function(r){
+var cls = r.score/r.max>=0.7?'pill-ok':r.score>0?'pill-warn':'pill-bad';
+var sym = r.score/r.max>=0.7?'✓':r.score>0?'~':'✗';
+pills.innerHTML+='<span class="score-pill '+cls+'">'+r.label+' '+sym+'</span>';
+});
+var bd = document.getElementById('result-breakdown');
+bd.innerHTML='';
+breakdown.forEach(function(r){
+var pct=Math.round((r.score/r.max)*100);
+var barColor=pct>=70?'var(--green)':pct>=30?'var(--amber)':'var(--red)';
+var scoreColor=pct>=70?'var(--green)':pct>=30?'var(--amber)':'var(--red)';
+bd.innerHTML+='<div class="bd-item"><div class="bd-ico">'+r.icon+'</div><div class="bd-info"><div class="bd-name">'+r.label+'</div><div class="bd-reason">'+r.reason+'</div></div><div class="bd-right"><div class="bd-pts" style="color:'+scoreColor+'">'+r.score+'/'+r.max+'</div><div class="bd-bar-wrap"><div class="bd-bar-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div></div></div>';
+});
+if(infPenalty>0 && hasSegs){
+var inf=document.getElementById('result-inflation');
+var infB=document.getElementById('result-inflation-body');
+inf.style.display='block';
+var pct2=Math.round(infPenalty*100);
+if(obState.ultima==='Hace más de 1 año') infB.textContent='Tus pólizas perdieron aproximadamente un '+pct2+'% de cobertura real por la inflación acumulada. Actualizarlas puede hacer la diferencia en un siniestro.';
+else infB.textContent='Tus pólizas pueden estar levemente desactualizadas. La inflación erosionó un '+pct2+'% del valor real de tu cobertura.';
+}
+document.getElementById('home-score').textContent=score;
+}
+function startOnboarding(){
+obStep=1; obState={edad:'',bienes:[],seguros:[],ultima:''};
+renderOb();
+showScreen('ob-screen');
+}
+function goMain(){ navHistory=[]; showScreen('main-screen'); showTab('home'); }
+function backToSplash(){ navHistory=[]; showScreen('splash-screen'); }
+var screens = ['splash-screen','ob-screen','score-screen','main-screen'];
+function showScreen(id){
+screens.forEach(function(s){
+var el=document.getElementById(s);
+if(el){ el.classList.remove('active','exit'); }
+});
+document.getElementById(id).classList.add('active');
+}
+var navHistory = [];
+var tabs = ['home','analysis','quotes','finanzas','profile'];
+function showTab(tab){
+showScreen('main-screen');
+var current = tabs.find(function(t){
+var el = document.getElementById(t);
+return el && el.classList.contains('active');
+});
+if(current && current !== tab) navHistory.push({type:'tab', id: current});
+tabs.forEach(function(t){
+var el=document.getElementById(t);
+var nav=document.getElementById('nav-'+t);
+if(el) el.classList.remove('active');
+if(nav) nav.classList.remove('active');
+});
+var el=document.getElementById(tab);
+var nav=document.getElementById('nav-'+tab);
+if(el) el.classList.add('active');
+if(nav) nav.classList.add('active');
+}
+function navBack(fallbackTab) {
+if(navHistory.length > 0) {
+var prev = navHistory.pop();
+if(prev.type === 'tab') {
+tabs.forEach(function(t){
+var el=document.getElementById(t);
+var nav=document.getElementById('nav-'+t);
+if(el) el.classList.remove('active');
+if(nav) nav.classList.remove('active');
+});
+var el=document.getElementById(prev.id);
+var nav=document.getElementById('nav-'+prev.id);
+if(el) el.classList.add('active');
+if(nav) nav.classList.add('active');
+return;
+}
+if(prev.type === 'screen') { showScreen(prev.id); return; }
+}
+if(fallbackTab) showTab(fallbackTab);
+else backToSplash();
+}
+function goBack() {
+if(navHistory.length > 0) {
+var prev = navHistory.pop();
+if(prev.type === 'screen') { showScreen(prev.id); return; }
+if(prev.type === 'tab') { showScreen('main-screen'); showTab(prev.id); return; }
+}
+showScreen('ob-screen');
+}
+['actual','optimizado','ahorro'].forEach(function(v){
+document.getElementById('ftog-'+v).classList.remove('active');
+var el=document.getElementById('fin-vista-'+v);
+if(el) el.style.display='none';
+});
+document.getElementById('ftog-'+vista).classList.add('active');
+var target=document.getElementById('fin-vista-'+vista);
+if(target) target.style.display='';
+}
+function filterChip(el){
+document.querySelectorAll('.filter-chip').forEach(function(c){c.classList.remove('active');});
+el.classList.add('active');
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+var toastTimer;
+function showToast(msg){
+var t=document.getElementById('toast');
+clearTimeout(toastTimer);
+t.textContent=msg; t.classList.add('show');
+toastTimer=setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+window.addEventListener('load',function(){
+var app = document.getElementById('app');
+if(app) app.style.height = window.innerHeight + 'px';
+window.addEventListener('resize', function(){
+if(app) app.style.height = window.innerHeight + 'px';
+});
+setTimeout(function(){
+var l=document.getElementById('loading');
+l.style.opacity='0';
+setTimeout(function(){ l.style.display='none'; },500);
+},1200);
+window.history.pushState({brokia:true}, '');
+window.addEventListener('popstate', function(e){
+window.history.pushState({brokia:true}, '');
+var openModal = document.querySelector('.modal-overlay.open');
+if(openModal){ openModal.classList.remove('open'); return; }
+var openSub = document.querySelector('.subscreen.open');
+if(openSub){ openSub.classList.remove('open'); return; }
+if(navHistory.length > 0){
+var prev = navHistory.pop();
+if(prev.type==='tab'){
+tabs.forEach(function(t){
+var el=document.getElementById(t); var nav=document.getElementById('nav-'+t);
+if(el) el.classList.remove('active'); if(nav) nav.classList.remove('active');
+});
+var el=document.getElementById(prev.id); var nav=document.getElementById('nav-'+prev.id);
+if(el) el.classList.add('active'); if(nav) nav.classList.add('active');
+} else if(prev.type==='screen'){ showScreen(prev.id); }
+} else {
+var mainActive = document.getElementById('main-screen').classList.contains('active');
+if(mainActive){ backToSplash(); }
+}
+});
+});
+var sinCurrentPoliza = null;
+var sinDocsHogar = {
+'incendio-h': [
+{ico:'🪪', name:'DNI del asegurado', detail:'Frente y dorso', req:'obligatorio', checked:false},
+{ico:'🏠', name:'Escritura o contrato de alquiler', detail:'Documento de la propiedad', req:'obligatorio', checked:false},
+{ico:'🚒', name:'Acta de bomberos', detail:'Informe oficial del siniestro', req:'obligatorio', checked:false},
+{ico:'👮', name:'Acta policial', detail:'Denuncia ante la comisaría más cercana', req:'obligatorio', checked:false},
+{ico:'📝', name:'Inventario de bienes dañados', detail:'Lista detallada con valores estimados', req:'obligatorio', checked:false},
+{ico:'💰', name:'Presupuesto de reparación', detail:'De empresa matriculada', req:'obligatorio', checked:false},
+{ico:'📄', name:'Póliza original', detail:'Si la tenés en papel', req:'opcional', checked:false}
+],
+'robo-h': [
+{ico:'🪪', name:'DNI del asegurado', detail:'Frente y dorso', req:'obligatorio', checked:false},
+{ico:'👮', name:'Denuncia policial', detail:'Obligatoria — dentro de las 24hs', req:'obligatorio', checked:false},
+{ico:'🏠', name:'Escritura o contrato de alquiler', detail:'Documento de la propiedad', req:'obligatorio', checked:false},
+{ico:'📝', name:'Inventario de bienes robados', detail:'Lista con descripción y valores', req:'obligatorio', checked:false},
+{ico:'🔑', name:'Cerrajero / informe de forzamiento', detail:'Si forzaron la puerta o ventana', req:'si aplica', checked:false},
+{ico:'📹', name:'Imágenes de cámara de seguridad', detail:'Si hay en el edificio o zona', req:'opcional', checked:false}
+],
+'inundacion': [
+{ico:'🪪', name:'DNI del asegurado', detail:'Frente y dorso', req:'obligatorio', checked:false},
+{ico:'🏠', name:'Escritura o contrato de alquiler', detail:'Documento de la propiedad', req:'obligatorio', checked:false},
+{ico:'🔧', name:'Informe del plomero o gasista', detail:'Causa técnica del daño con firma y matrícula', req:'obligatorio', checked:false},
+{ico:'💰', name:'Presupuesto de reparación', detail:'Materiales y mano de obra detallados', req:'obligatorio', checked:false},
+{ico:'📝', name:'Inventario de bienes dañados', detail:'Muebles, electrodomésticos, ropa', req:'obligatorio', checked:false},
+{ico:'🏗️', name:'Plano o croquis del inmueble', detail:'Indicando la zona afectada', req:'opcional', checked:false}
+],
+'dano-agua': [
+{ico:'🪪', name:'DNI del asegurado', detail:'Frente y dorso', req:'obligatorio', checked:false},
+{ico:'🔧', name:'Informe del plomero', detail:'Origen y causa del daño con matrícula', req:'obligatorio', checked:false},
+{ico:'💰', name:'Presupuesto de reparación', detail:'Sanitarios y obra civil', req:'obligatorio', checked:false},
+{ico:'🏠', name:'Escritura o contrato de alquiler', detail:'Documento de la propiedad', req:'obligatorio', checked:false},
+{ico:'👥', name:'Datos del vecino afectado', detail:'Si el daño alcanzó a un tercero', req:'si aplica', checked:false}
+]
+};
+var sinFotosHogar = {
+'incendio-h': [{ico:'🔥',label:'Zona del incendio'},{ico:'🏠',label:'Fachada exterior'},{ico:'🛋️',label:'Interior afectado'},{ico:'⚡',label:'Instalación eléctrica'},{ico:'🏗️',label:'Estructura/techo'},{ico:'📦',label:'Bienes dañados'}],
+'robo-h':     [{ico:'🚪',label:'Punto de entrada'},{ico:'🔓',label:'Cerradura forzada'},{ico:'🏠',label:'Exterior del inmueble'},{ico:'🛋️',label:'Interior con faltantes'},{ico:'🪟',label:'Ventanas/aberturas'},{ico:'📹',label:'Zona de cámaras'}],
+'inundacion': [{ico:'💧',label:'Zona inundada'},{ico:'🏠',label:'Paredes con humedad'},{ico:'🪣',label:'Cielorraso/piso'},{ico:'🔧',label:'Instalación dañada'},{ico:'📦',label:'Bienes afectados'},{ico:'🏠',label:'Exterior'}],
+'dano-agua':  [{ico:'💧',label:'Origen del daño'},{ico:'🏠',label:'Zona afectada'},{ico:'🪣',label:'Paredes/piso húmedos'},{ico:'🔧',label:'Cañería/instalación'},{ico:'🏠',label:'Dept. del vecino'},{ico:'📦',label:'Bienes dañados'}]
+};
+var sinTipsHogar = {
+'incendio-h': 'No ingresés al inmueble hasta que los bomberos lo autoricen. Las fotos del origen del fuego y la instalación eléctrica son clave para el peritaje.',
+'robo-h': 'No toques nada antes de fotografiar. La denuncia policial debe hacerse dentro de las 24hs. Pedí copia del acta en la comisaría.',
+'inundacion': 'Fotografiá todo antes de secar o reparar. El informe del plomero con firma y matrícula es el documento más importante del expediente.',
+'dano-agua': 'Avisale al vecino afectado para coordinar. El informe del plomero con la causa exacta es lo que define si la aseguradora cubre el daño.'
+};
+var sinTypeLabelsHogar = {
+'incendio-h': '🔥 Incendio',
+'robo-h':     '🔓 Robo',
+'inundacion': '💧 Inundación',
+'dano-agua':  '🚿 Daño por agua'
+};
+var sinTypeHintsHogar = {
+'incendio-h': 'Necesitarás: DNI, escritura, acta de bomberos, acta policial, inventario de bienes dañados y presupuesto de reparación.',
+'robo-h':     'Necesitarás: DNI, denuncia policial (dentro de las 24hs), escritura o contrato e inventario de bienes robados.',
+'inundacion': 'Necesitarás: DNI, escritura, informe del plomero matriculado, presupuesto de reparación e inventario de bienes dañados.',
+'dano-agua':  'Necesitarás: DNI, informe del plomero con la causa exacta y presupuesto de reparación sanitaria y obra civil.'
+};
+function openSiniestroDesdePoliza(config) {
+sinCurrentPoliza = config;
+sinType = config.tipos[0];
+sinCurrentStep = 1;
+var banner = document.getElementById('sin-poliza-banner');
+if(banner) {
+banner.innerHTML = '<div style="font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Póliza cargada automáticamente</div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">'+config.icon+'</span><div style="flex:1"><div style="font-size:13px;font-weight:500;color:#fff">'+config.nombre+'</div><div style="font-size:11px;color:rgba(255,255,255,.5)">'+config.compania+' · #'+config.polizaNum+'</div></div><div style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:9px;padding:4px 10px;border-radius:10px;cursor:pointer" onclick="showToast(\'Seleccioná otra póliza\')">Cambiar</div></div>';
+}
+var step2datos = document.getElementById('sin-datos-bien');
+if(step2datos) {
+step2datos.innerHTML = '<div class="bd-item"><div class="bd-ico">'+config.icon+'</div><div class="bd-info"><div class="bd-name">Bien asegurado</div><div class="bd-reason">'+config.nombre+'</div></div><div style="font-size:9px;font-weight:600;color:var(--green)">Auto ✓</div></div>';
+}
+renderSiniestroTypes(config);
+for(var i=1;i<=5;i++){
+var s=document.getElementById('sin-s'+i);
+if(s) s.style.display=(i===1)?'':'none';
+}
+updateStepPills(1);
+document.getElementById('sin-screen-title').textContent = 'Denunciar siniestro';
+openSiniestro();
+}
+function renderSiniestroTypes(config) {
+var tipos = config ? config.tipos : ['choque','robo','granizo','incendio'];
+var ramo = config ? config.ramo : 'auto';
+var labels = ramo==='hogar' ? sinTypeLabelsHogar : sinTypeLabels;
+var hints = ramo==='hogar' ? sinTypeHintsHogar : sinTypeHints;
+var icons = {
+choque:'💥', robo:'🔓', granizo:'🌧️', incendio:'🔥',
+'incendio-h':'🔥', 'robo-h':'🔓', inundacion:'💧', 'dano-agua':'🚿'
+};
+var names = {
+choque:'Choque', robo:'Robo', granizo:'Granizo', incendio:'Incendio',
+'incendio-h':'Incendio', 'robo-h':'Robo', inundacion:'Inundación', 'dano-agua':'Daño por agua'
+};
+var descs = {
+choque:'Con o sin tercero', robo:'Total o parcial', granizo:'Daños por clima', incendio:'Parcial o total',
+'incendio-h':'Estructural o contenido', 'robo-h':'Con o sin forzamiento', inundacion:'Lluvia o desborde', 'dano-agua':'Caño o filtración'
+};
+var grid = document.querySelector('#sin-s1 .sin-type-grid');
+if(!grid) return;
+grid.innerHTML = '';
+tipos.forEach(function(t, idx) {
+var cls = idx===0 ? 'sin-type-btn sel' : 'sin-type-btn';
+grid.innerHTML += '<div class="'+cls+'" id="stype-'+t+'" onclick="selectType(\''+t+'\',this)"><div style="font-size:26px;margin-bottom:6px">'+icons[t]+'</div><div style="font-size:13px;font-weight:500">'+names[t]+'</div><div style="font-size:10px;color:var(--gray-400);margin-top:2px">'+descs[t]+'</div></div>';
+});
+sinType = tipos[0];
+var hint = document.getElementById('sin-type-hint');
+if(hint) hint.innerHTML = '<div style="font-size:12px;font-weight:500;color:var(--brand-dark);margin-bottom:3px">'+icons[tipos[0]]+' '+names[tipos[0]]+' seleccionado</div><div style="font-size:11px;color:var(--gray-600);line-height:1.5">'+hints[tipos[0]]+'</div>';
+var terceroSection = document.getElementById('sin-tercero-section');
+if(terceroSection) terceroSection.style.display = (ramo==='auto' && tipos.includes('choque')) ? 'block' : 'none';
+}
+function getDocsByType(type) {
+return sinDocsHogar[type] || sinDocs[type] || [];
+}
+function getFotosByType(type) {
+return sinFotosHogar[type] || sinFotos[type] || [];
+}
+function getTipByType(type) {
+return sinTipsHogar[type] || sinTips[type] || '';
+}
+function getLabelByType(type) {
+return sinTypeLabelsHogar[type] || sinTypeLabels[type] || type;
+}
+var _origRenderDocs = renderDocs;
+renderDocs = function() {
+var docs = getDocsByType(sinType);
+var list = document.getElementById('sin-doc-list');
+list.innerHTML = '';
+docs.forEach(function(doc, i) {
+var cls = doc.checked ? 'sin-doc-item checked' : 'sin-doc-item';
+var chk = doc.checked ? '✓' : '';
+var reqCls = doc.req==='obligatorio' ? 'req-ob' : 'req-op';
+list.innerHTML += '<div class="'+cls+'" onclick="toggleDoc('+i+')" id="sindoc-'+i+'"><div class="sin-doc-check">'+chk+'</div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--gray-800)">'+doc.ico+' '+doc.name+'</div><div style="font-size:11px;color:var(--gray-400);margin-top:2px">'+doc.detail+'</div><span class="sin-doc-req '+reqCls+'">'+doc.req+'</span></div></div>';
+});
+var obligatorios = docs.filter(function(d){return d.req==='obligatorio';}).length;
+var checkedOb = docs.filter(function(d){return d.req==='obligatorio'&&d.checked;}).length;
+var alert = document.getElementById('sin-doc-alert');
+if(checkedOb<obligatorios){
+alert.style.background='var(--amber-light)';alert.style.border='1px solid #FDE68A';
+alert.innerHTML='<div style="font-size:12px;font-weight:500;color:#92400E;margin-bottom:3px">'+checkedOb+'/'+obligatorios+' documentos obligatorios listos</div><div style="font-size:11px;color:var(--gray-600);line-height:1.5">Podés enviar la denuncia y completar los faltantes con tu productor.</div>';
+} else {
+alert.style.background='var(--green-light)';alert.style.border='1px solid #A7F3D0';
+alert.innerHTML='<div style="font-size:12px;font-weight:500;color:#065F46;margin-bottom:2px">✓ Todos los documentos obligatorios listos</div><div style="font-size:11px;color:var(--gray-600)">Podés continuar con las fotos.</div>';
+}
+};
+var _origToggleDoc = toggleDoc;
+toggleDoc = function(i) {
+var docs = getDocsByType(sinType);
+if(docs===sinDocs[sinType]) { sinDocs[sinType][i].checked=!sinDocs[sinType][i].checked; }
+else if(sinDocsHogar[sinType]) { sinDocsHogar[sinType][i].checked=!sinDocsHogar[sinType][i].checked; }
+renderDocs();
+};
+var _origRenderFotos = renderFotos;
+renderFotos = function() {
+var fotos = getFotosByType(sinType);
+var grid = document.getElementById('sin-foto-grid');
+grid.innerHTML = '';
+fotos.forEach(function(f){
+grid.innerHTML+='<div class="sin-foto-slot" onclick="uploadFoto(this)"><div style="font-size:20px;margin-bottom:4px">'+f.ico+'</div><div style="font-size:10px;color:var(--gray-400);line-height:1.3">'+f.label+'</div></div>';
+});
+document.getElementById('sin-foto-tip').textContent = getTipByType(sinType);
+};
+var _origSelectType = selectType;
+selectType = function(type, el) {
+sinType = type;
+document.querySelectorAll('.sin-type-btn').forEach(function(b){b.classList.remove('sel');});
+el.classList.add('sel');
+var ramo = sinCurrentPoliza ? sinCurrentPoliza.ramo : 'auto';
+var hints = ramo==='hogar' ? sinTypeHintsHogar : sinTypeHints;
+var icons = {choque:'💥',robo:'🔓',granizo:'🌧️',incendio:'🔥','incendio-h':'🔥','robo-h':'🔓',inundacion:'💧','dano-agua':'🚿'};
+var names = {choque:'Choque',robo:'Robo',granizo:'Granizo',incendio:'Incendio','incendio-h':'Incendio','robo-h':'Robo',inundacion:'Inundación','dano-agua':'Daño por agua'};
+var hint = document.getElementById('sin-type-hint');
+if(hint) hint.innerHTML='<div style="font-size:12px;font-weight:500;color:var(--brand-dark);margin-bottom:3px">'+icons[type]+' '+names[type]+' seleccionado</div><div style="font-size:11px;color:var(--gray-600);line-height:1.5">'+hints[type]+'</div>';
+var terceroSection = document.getElementById('sin-tercero-section');
+if(terceroSection) terceroSection.style.display=(ramo==='auto'&&type==='choque')?'block':'none';
+};
+var microData = {
+celular: {icon:'📱', name:'Seguro de celular', precio:'desde $2.800/mes', desc:'Rotura de pantalla, daño por agua, robo y hurto. Para cualquier marca y modelo.', coberturas:['Rotura accidental de pantalla','Daño por agua o humedad','Robo o hurto con violencia','Daño accidental total'], docs:['Factura de compra del equipo','Foto del IMEI (Configuración → Información)','DNI del asegurado'], color:'#EEF2FF'},
+bici: {icon:'🚲', name:'Seguro de bicicleta', precio:'desde $3.200/mes', desc:'Robo, daño en accidente y responsabilidad civil por daños a terceros.', coberturas:['Robo total con denuncia policial','Daño por accidente o choque','Responsabilidad civil a terceros','Asistencia en ruta'], docs:['Factura o ticket de compra','Foto de la bicicleta con número de serie','DNI del asegurado'], color:'#ECFDF5'},
+monopatin: {icon:'🛴', name:'Seguro de monopatín', precio:'desde $2.500/mes', desc:'Robo y daño para monopatines eléctricos y mecánicos. Incluye RC.', coberturas:['Robo total con denuncia','Daño accidental','Responsabilidad civil','Reparación de batería'], docs:['Factura de compra','Foto del número de serie','DNI del asegurado'], color:'#F3E8FF'},
+instrumento: {icon:'🎸', name:'Seguro de instrumento', precio:'desde $4.100/mes', desc:'Instrumentos musicales, equipos de audio y accesorios. Para músicos amateurs y profesionales.', coberturas:['Robo total o parcial','Daño accidental','En traslados y presentaciones','Responsabilidad civil'], docs:['Factura o tasación profesional','Fotos del instrumento','DNI del asegurado'], color:'#FFFBEB'},
+viaje: {icon:'✈️', name:'Seguro de viaje', precio:'desde $8.500/viaje', desc:'Asistencia médica internacional, cancelación, pérdida de equipaje y demoras. Para cualquier destino.', coberturas:['Emergencia médica hasta USD 100.000','Cancelación y demora de vuelo','Pérdida o robo de equipaje','Asistencia legal en el exterior'], docs:['DNI o pasaporte','Reserva del viaje (vuelo/hotel)','Tarjeta de embarque'], color:'#EEF2FF'},
+laptop: {icon:'💻', name:'Seguro de notebook', precio:'desde $5.600/mes', desc:'Rotura accidental, robo y daño por líquidos para cualquier laptop o tablet.', coberturas:['Rotura accidental de pantalla','Daño por derrame de líquido','Robo o hurto','Daño accidental total'], docs:['Factura de compra','Foto del número de serie','DNI del asegurado'], color:'#EEF2FF'}
+};
+function openMicroseguro(tipo) {
+var d = microData[tipo];
+if(!d) return;
+var sheet = document.getElementById('modal-micro-sheet');
+sheet.innerHTML = '<div class="modal-handle"></div><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><div style="width:52px;height:52px;border-radius:16px;background:'+d.color+';display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">'+d.icon+'</div><div><div class="modal-title" style="margin-bottom:2px">'+d.name+'</div><div style="font-size:13px;font-weight:500;color:var(--green)">'+d.precio+'</div></div></div><div style="font-size:13px;color:var(--gray-600);line-height:1.6;margin-bottom:14px">'+d.desc+'</div><div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Coberturas incluidas</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">'+d.coberturas.map(function(c){return '<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray-700)"><span style="color:var(--green);font-weight:600">✓</span>'+c+'</div>';}).join('')+'</div><div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Documentación necesaria</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px">'+d.docs.map(function(doc){return '<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray-700)"><span style="color:var(--brand);font-weight:600">·</span>'+doc+'</div>';}).join('')+'</div><button class="btn-brand" onclick="showToast(\'🎉 ¡Cotización enviada! El productor te contacta pronto.\');closeModal(\'modal-microseguro\')">Cotizar con mi productor →</button>';
+openModal('modal-microseguro');
+}
+</script>
+</div>
+</body>
+</html>
